@@ -1,7 +1,6 @@
 {
   "name": "decision-tree",
   "version": "0.1.0",
-  "private": true,
   "author": "bugless",
   "license": "MIT",
   "repository": "git://github.com/bugless/nodejs-decision-tree-id3",

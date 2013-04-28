@@ -1,0 +1,15 @@
+{
+  "name": "DecisionTree",
+  "version": "0.1.0",
+  "private": true,
+  "author": "bugless",
+  "license": "MIT",
+  "repository": "git://github.com/bugless/nodejs-decision-tree-id3",
+  "main": "./lib/decision-tree",
+	"dependencies": {
+    "underscore": "~1.4.4"
+  },
+  "scripts": {
+    "test": "NODE_PATH=. mocha -R spec tst/*"
+  }
+}

@@ -1,12 +1,11 @@
 {
   "name": "decision-tree",
   "description": "NodeJS implementation of decision tree using ID3 algorithm",
-	"version": "0.1.0",
+	"version": "0.2.0",
   "author": "bugless <ankit.rk@gmail.com>",
 	"contributors": [
 		{ "name": "bugless", "email": "ankit.rk@gmail.com" }
 	],
-  "license": "MIT",
   "repository": "git://github.com/bugless/nodejs-decision-tree-id3",
   "main": "./lib/decision-tree",
 	"dependencies": {

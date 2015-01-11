@@ -3,10 +3,17 @@ Decision Tree for NodeJS
 
 This module contains the NodeJS Implementation of Decision Tree using [ID3 Algorithm](http://en.wikipedia.org/wiki/ID3_algorithm)
 
-### Installation
+# Table Of Contents
+* [`Installation`](#installation)
+* [`Usage`](#usage)
+	* [`Import Module`](#installation)
+	* [`Prepare`](#installation)
+	* [`Installation`](#installation)
+
+# [Installation](id:installation)
 	npm install decision-tree
 
-### Usage
+# [Usage](id:usage)
 
 * Import the module:
 

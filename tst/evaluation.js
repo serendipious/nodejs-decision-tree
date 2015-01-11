@@ -13,7 +13,7 @@ describe('ID3 Decision Tree', function() {
 
     it('should initialize on training dataset', function() {
       assert.ok(dt);
-      assert.ok(dt.model);
+      assert.ok(dt.toJSON());
     });
 
     it('should evaluate perfectly on training dataset', function() {
@@ -30,7 +30,7 @@ describe('ID3 Decision Tree', function() {
 
     it('should initialize on training dataset', function() {
       assert.ok(dt);
-      assert.ok(dt.model);
+      assert.ok(dt.toJSON());
     });
 
     it('should evaluate perfectly on training dataset', function() {

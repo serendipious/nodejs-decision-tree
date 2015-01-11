@@ -3,7 +3,7 @@
   "description": "NodeJS implementation of decision tree using ID3 algorithm",
   "version": "0.3.0",
   "author": "Ankit Kuwadekar",
-  "repository": "git://github.com/bugless/nodejs-decision-tree-id3",
+  "repository": "git://github.com/serendipious/nodejs-decision-tree-id3",
   "main": "./lib/decision-tree",
   "dependencies": {
     "lodash": "^2.4.1"

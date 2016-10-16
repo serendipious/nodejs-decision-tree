@@ -1,0 +1,13 @@
+{
+	"features": ["foo", "bar","flim"],
+	"data": [
+		{"foo":true, "bar":true, "flim":true, "classification":{"description":"foo bar flim"}},
+		{"foo":false, "bar":true, "flim":true, "classification":{"description":"bar flim"}},
+		{"foo":true, "bar":false, "flim":true, "classification":{"description":"foo flim"}},
+		{"foo":false, "bar":false, "flim":true, "classification":{"description":"flim"}},
+		{"foo":true, "bar":true, "flim":false, "classification":{"description":"foo bar"}},
+		{"foo":false, "bar":true, "flim":false, "classification":{"description":"bar"}},
+		{"foo":true, "bar":false, "flim":false, "classification":{"description":"foo"}},
+		{"foo":false, "bar":false, "flim":false, "classification":{"description":"none"}}
+	]
+}

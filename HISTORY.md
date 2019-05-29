@@ -1,4 +1,4 @@
-# 0.3.2 / 2019-05-16
+# 0.3.2 / 2019-05-15
 
 * fix(license): fix the license text but keep it MIT as of the original code.
 * fix(lodash): upgrade lodash to the latest version

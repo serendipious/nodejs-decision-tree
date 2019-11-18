@@ -14,6 +14,11 @@ describe('ID3 Decision Tree', function() {
     assert.ok(dt);
   });
 
+  it('should throw initialization error with invalid constructor arguments', function() {
+    assert.throws(() => new ID3());
+    assert.throws(() => new ID3(1, 2));
+  });
+
   it('should train on the dataset', function() {
     assert.ok(dt.toJSON());
   });
@@ -31,9 +36,19 @@ describe('ID3 Decision Tree', function() {
   });
 
   it('should provide access to the underlying model as JSON', function() {
-    var treeModel = dt.toJSON();
+    var dtJson = dt.toJSON();
+    var treeModel = dtJson.model;
     assert.equal(treeModel.constructor, Object);
     assert.equal(treeModel.vals.constructor, Array);
     assert.equal(treeModel.vals.length, 3);
+
+    assert.equal(dtJson.features.constructor, Array);
+    assert.equal(dtJson.target.constructor, String);
+  });
+
+  it('should initialize from existing or previously exported model', function() {
+    var pretrainedDecTree = new ID3(dt.toJSON());
+    var pretrainedDecTreeAccuracy = pretrainedDecTree.evaluate(SAMPLE_DATASET.data);
+    assert.equal(pretrainedDecTreeAccuracy, 1);
   });
 });

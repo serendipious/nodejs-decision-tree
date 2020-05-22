@@ -29,7 +29,7 @@
     "ID3"
   ],
   "devDependencies": {
-    "mocha": "^6.1.4"
+    "mocha": "^7.1.2"
   },
   "license": "MIT"
 }

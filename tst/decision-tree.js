@@ -2,24 +2,27 @@ const SAMPLE_DATASET = require('data/sample.json');
 const SAMPLE_DATASET_CLASS_NAME = 'liked';
 
 var assert = require('assert');
-var ID3 = require('lib/decision-tree');
+var ID3 = require('../lib/decision-tree');
 
 describe('ID3 Decision Tree Basics', function() {
-  var dt;
-  before(function() {
-    dt = new ID3(SAMPLE_DATASET.data, SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features);
+  var dt = new ID3(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features);
+
+  it('should initialize with valid argument constructor', () => {
+    assert.ok(new ID3(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features));
+    assert.ok(new ID3(SAMPLE_DATASET.data, SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features));
   });
 
-  it('should initialize', function() {
+  it('should initialize & train for the three argument constructor', function() {
     assert.ok(dt);
   });
 
   it('should throw initialization error with invalid constructor arguments', function() {
     assert.throws(() => new ID3());
-    assert.throws(() => new ID3(1, 2));
+    assert.throws(() => new ID3(1, 2, 3, 4));
   });
 
   it('should train on the dataset', function() {
+    dt.train(SAMPLE_DATASET.data);
     assert.ok(dt.toJSON());
   });
 

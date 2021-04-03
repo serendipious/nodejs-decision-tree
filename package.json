@@ -1,7 +1,7 @@
 {
   "name": "decision-tree",
   "description": "NodeJS implementation of decision tree using ID3 algorithm",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "author": "Ankit Kuwadekar",
   "repository": {
     "type": "git",

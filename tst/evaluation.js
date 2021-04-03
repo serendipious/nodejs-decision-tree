@@ -5,7 +5,7 @@ const VOTING_DATASET            = require('data/voting.json');
 var assert = require('assert');
 var ID3    = require('lib/decision-tree');
 
-describe('ID3 Decision Tree', function() {
+describe('ID3 Decision Tree on Sample Datasets', function() {
   describe('Tic Tac Toe Dataset', function() {
     var dt;
     before(function() {
@@ -19,7 +19,7 @@ describe('ID3 Decision Tree', function() {
 
     it('should evaluate perfectly on training dataset', function() {
       var accuracy = dt.evaluate(TIC_TAC_TOE_DATASET.data);
-      assert.equal(accuracy, 1);
+      assert.strictEqual(accuracy, 1);
     });
   });
 
@@ -36,7 +36,7 @@ describe('ID3 Decision Tree', function() {
 
     it('should evaluate perfectly on training dataset', function() {
       var accuracy = dt.evaluate(VOTING_DATASET.data);
-      assert.equal(accuracy, 1);
+      assert.strictEqual(accuracy, 1);
     });
   });
 
@@ -63,7 +63,7 @@ describe('ID3 Decision Tree', function() {
         {"foo":false, "bar":false, "flim":false, "classification":{"description":"none"}}
       ];
       var accuracy = dt.evaluate(data);
-      assert.equal(accuracy, 1);
+      assert.strictEqual(accuracy, 1);
     });
 
     it('should evaluate 87.5% on training dataset', function() {
@@ -78,7 +78,7 @@ describe('ID3 Decision Tree', function() {
         {"foo":false, "bar":false, "flim":false, "classification":{}}
       ];
       var accuracy = dt.evaluate(data);
-      assert.equal(accuracy, 0.875);
+      assert.strictEqual(accuracy, 0.875);
     });
   });
 });

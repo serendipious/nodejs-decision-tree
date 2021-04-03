@@ -1,7 +1,7 @@
 {
   "name": "decision-tree",
   "description": "NodeJS implementation of decision tree using ID3 algorithm",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "Ankit Kuwadekar",
   "repository": {
     "type": "git",
@@ -9,13 +9,13 @@
   },
   "main": "./lib/decision-tree",
   "dependencies": {
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.21"
   },
   "scripts": {
     "test": "NODE_PATH=. ./node_modules/.bin/mocha -R spec tst/*"
   },
   "engines": {
-    "node": "*"
+    "node": ">= 14.x"
   },
   "keywords": [
     "decision",
@@ -29,7 +29,7 @@
     "ID3"
   ],
   "devDependencies": {
-    "mocha": "^7.1.2"
+    "mocha": "^8.3.2"
   },
   "license": "MIT"
 }

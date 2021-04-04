@@ -19,6 +19,9 @@ describe('ID3 Decision Tree Basics', function() {
   it('should throw initialization error with invalid constructor arguments', function() {
     assert.throws(() => new ID3());
     assert.throws(() => new ID3(1, 2, 3, 4));
+    assert.throws(() => new ID3(1, 1));
+    assert.throws(() => new ID3("abc", 1));
+    assert.throws(() => new ID3(1, 1, 1));
   });
 
   it('should train on the dataset', function() {

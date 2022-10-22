@@ -1,15 +1,15 @@
 const assert = require('assert');
-const ID3 = require('../lib/decision-tree');
+const DecisionTree = require('../lib/decision-tree');
 
 const SAMPLE_DATASET = require('data/sample.json');
 const SAMPLE_DATASET_CLASS_NAME = 'liked';
 
-describe('ID3 Decision Tree Basics', function() {
-  const dt = new ID3(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features);
+describe('Decision Tree Basics', function() {
+  const dt = new DecisionTree(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features);
 
   it('should initialize with valid argument constructor', () => {
-    assert.ok(new ID3(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features));
-    assert.ok(new ID3(SAMPLE_DATASET.data, SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features));
+    assert.ok(new DecisionTree(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features));
+    assert.ok(new DecisionTree(SAMPLE_DATASET.data, SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features));
   });
 
   it('should initialize & train for the three argument constructor', function() {
@@ -17,11 +17,11 @@ describe('ID3 Decision Tree Basics', function() {
   });
 
   it('should throw initialization error with invalid constructor arguments', function() {
-    assert.throws(() => new ID3());
-    assert.throws(() => new ID3(1, 2, 3, 4));
-    assert.throws(() => new ID3(1, 1));
-    assert.throws(() => new ID3("abc", 1));
-    assert.throws(() => new ID3(1, 1, 1));
+    assert.throws(() => new DecisionTree());
+    assert.throws(() => new DecisionTree(1, 2, 3, 4));
+    assert.throws(() => new DecisionTree(1, 1));
+    assert.throws(() => new DecisionTree("abc", 1));
+    assert.throws(() => new DecisionTree(1, 1, 1));
   });
 
   it('should train on the dataset', function() {
@@ -68,7 +68,7 @@ describe('ID3 Decision Tree Basics', function() {
   });
 
   it('should initialize from existing or previously exported model', function() {
-    const pretrainedDecTree = new ID3(dt.toJSON());
+    const pretrainedDecTree = new DecisionTree(dt.toJSON());
     const pretrainedDecTreeAccuracy = pretrainedDecTree.evaluate(SAMPLE_DATASET.data);
     assert.strictEqual(pretrainedDecTreeAccuracy, 1);
   });

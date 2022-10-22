@@ -5,7 +5,7 @@
   "author": "Ankit Kuwadekar",
   "repository": {
     "type": "git",
-    "url": "git://github.com/serendipious/nodejs-decision-tree-id3"
+    "url": "git://github.com/serendipious/nodejs-decision-tree"
   },
   "main": "./lib/decision-tree",
   "dependencies": {
@@ -29,7 +29,7 @@
     "ID3"
   ],
   "devDependencies": {
-    "mocha": "^8.3.2"
+    "mocha": "^10.1.0"
   },
   "license": "MIT"
 }

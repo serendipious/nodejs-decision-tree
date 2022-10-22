@@ -1,13 +1,13 @@
 const assert = require('assert');
-const ID3    = require('../lib/decision-tree');
+const DecisionTree    = require('../lib/decision-tree');
 
 const OBJECT_EVALUATION_DATASET = require('data/object-evaluation.json');
 const TIC_TAC_TOE_DATASET       = require('data/tic-tac-toe.json');
 const VOTING_DATASET            = require('data/voting.json');
 
-describe('ID3 Decision Tree on Sample Datasets', function() {
+describe('DecisionTree Decision Tree on Sample Datasets', function() {
   describe('Tic Tac Toe Dataset', function() {
-    const dt = new ID3(TIC_TAC_TOE_DATASET.data, 'classification', TIC_TAC_TOE_DATASET.features);
+    const dt = new DecisionTree(TIC_TAC_TOE_DATASET.data, 'classification', TIC_TAC_TOE_DATASET.features);
 
     it('should initialize on training dataset', function() {
       assert.ok(dt);
@@ -21,7 +21,7 @@ describe('ID3 Decision Tree on Sample Datasets', function() {
   });
 
   describe('Voting Dataset', function() {
-    const dt = new ID3(VOTING_DATASET.data, 'classification', VOTING_DATASET.features);
+    const dt = new DecisionTree(VOTING_DATASET.data, 'classification', VOTING_DATASET.features);
     
     it('should initialize on training dataset', function() {
       assert.ok(dt);
@@ -35,7 +35,7 @@ describe('ID3 Decision Tree on Sample Datasets', function() {
   });
 
   describe('Object Evaluation Dataset', function() {
-    const dt = new ID3(OBJECT_EVALUATION_DATASET.data, 'classification', OBJECT_EVALUATION_DATASET.features);
+    const dt = new DecisionTree(OBJECT_EVALUATION_DATASET.data, 'classification', OBJECT_EVALUATION_DATASET.features);
 
     it('should initialize on training dataset', function() {
       assert.ok(dt);

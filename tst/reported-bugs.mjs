@@ -1,9 +1,21 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import DecisionTree from '../lib/decision-tree.js';
 
-import OBJECT_EVALUATION_DATASET from '../data/object-evaluation.json' assert { type: 'json' };
-import TIC_TAC_TOE_DATASET from '../data/tic-tac-toe.json' assert { type: 'json' };
-import VOTING_DATASET from '../data/voting.json' assert { type: 'json' };
+// Helper function to load JSON files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+function loadJSON(filename) {
+  const filePath = join(__dirname, '..', 'data', filename);
+  return JSON.parse(readFileSync(filePath, 'utf8'));
+}
+
+const OBJECT_EVALUATION_DATASET = loadJSON('object-evaluation.json');
+const TIC_TAC_TOE_DATASET = loadJSON('tic-tac-toe.json');
+const VOTING_DATASET = loadJSON('voting.json');
 
 /**
  * Reported bugs from: https://github.com/serendipious/nodejs-decision-tree/issues

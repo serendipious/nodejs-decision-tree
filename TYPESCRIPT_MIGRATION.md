@@ -150,17 +150,18 @@ To add TypeScript support to your project:
 
 ## Browser Compatibility
 
-The compiled JavaScript is ES5 compatible and works in:
+The compiled JavaScript is ES2022 compatible and works in:
 - All modern browsers
-- Node.js 14+
-- Legacy environments
-- Bundlers (Webpack, Rollup, etc.)
+- Node.js 20+
+- Modern bundlers (Webpack, Rollup, Vite, etc.)
+- ES module environments
 
 ## Performance
 
 - **Zero runtime overhead** - TypeScript types are removed during compilation
 - **Same performance** as the original JavaScript version
-- **Smaller bundle size** when using modern bundlers (ES6 modules)
+- **Smaller bundle size** when using modern bundlers (ES modules)
+- **Modern ES2022 features** for better performance and smaller code
 
 ## Contributing
 

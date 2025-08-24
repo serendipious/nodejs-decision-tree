@@ -1,4 +1,4 @@
-const DecisionTree = require('../lib/decision-tree');
+import DecisionTree from '../lib/decision-tree.js';
 
 // Sample training data
 const trainingData = [
@@ -55,3 +55,7 @@ console.log('Node types:', DecisionTree.NODE_TYPES);
 // Example with ES6 import syntax (if using bundlers)
 // import DecisionTree from 'decision-tree';
 // const dt = new DecisionTree(target, features);
+
+// For CommonJS environments, you can use dynamic imports:
+// const DecisionTree = await import('decision-tree');
+// const dt = new DecisionTree.default(target, features);

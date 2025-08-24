@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 /**
  * Decision Tree Algorithm
@@ -336,4 +336,4 @@ function randomUUID(): string {
 }
 
 // Export the DecisionTree class
-export = DecisionTree;
+export default DecisionTree;

@@ -1,6 +1,19 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import DecisionTree from '../lib/decision-tree.js';
-import SAMPLE_DATASET from '../data/sample.json' assert { type: 'json' };
+
+// Helper function to load JSON files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+function loadJSON(filename) {
+  const filePath = join(__dirname, '..', 'data', filename);
+  return JSON.parse(readFileSync(filePath, 'utf8'));
+}
+
+const SAMPLE_DATASET = loadJSON('sample.json');
 const SAMPLE_DATASET_CLASS_NAME = 'liked';
 
 describe('Decision Tree Basics', function() {

@@ -4,11 +4,14 @@ Decision Tree for Node.js
 This Node.js module implements a Decision Tree using the [ID3 Algorithm](http://en.wikipedia.org/wiki/ID3_algorithm)
 
 # [Installation](id:installation)
+
+**Requires Node.js 20 or higher**
+
     npm install decision-tree
 
 ## TypeScript Support
 
-This module is written in TypeScript and provides full type definitions. The compiled JavaScript maintains full backward compatibility with existing Node.js and browser projects.
+This module is written in TypeScript and provides full type definitions. The compiled JavaScript maintains full backward compatibility with existing Node.js and browser projects. **Requires Node.js 20+ for development and testing.**
 
 ### TypeScript Usage
 

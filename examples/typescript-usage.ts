@@ -1,4 +1,4 @@
-import DecisionTree from '../lib/decision-tree';
+import DecisionTree from '../lib/decision-tree.js';
 
 // Define interfaces for type safety
 interface TrainingData {

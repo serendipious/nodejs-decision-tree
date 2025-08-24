@@ -5,7 +5,7 @@
   "author": "Ankit Kuwadekar",
   "repository": {
     "type": "git",
-    "url": "git://github.com/serendipious/nodejs-decision-tree"
+    "url": "git://github.com/serendipious/nodejs-decision-tree.git"
   },
   "main": "./lib/decision-tree.js",
   "types": "./lib/decision-tree.d.ts",

@@ -6,6 +6,39 @@ This Node.js module implements a Decision Tree using the [ID3 Algorithm](http://
 # [Installation](id:installation)
     npm install decision-tree
 
+## TypeScript Support
+
+This module is written in TypeScript and provides full type definitions. The compiled JavaScript maintains full backward compatibility with existing Node.js and browser projects.
+
+### TypeScript Usage
+
+```typescript
+import DecisionTree from 'decision-tree';
+
+// Or with CommonJS
+const DecisionTree = require('decision-tree');
+
+// Full type safety for training data
+interface TrainingData {
+  color: string;
+  shape: string;
+  liked: boolean;
+}
+
+const training_data: TrainingData[] = [
+  {"color":"blue", "shape":"square", "liked":false},
+  {"color":"red", "shape":"square", "liked":false},
+  {"color":"blue", "shape":"circle", "liked":true},
+  {"color":"red", "shape":"circle", "liked":true}
+];
+
+const dt = new DecisionTree('liked', ['color', 'shape']);
+dt.train(training_data);
+
+// Type-safe prediction
+const prediction = dt.predict({ color: "blue", shape: "hexagon" });
+```
+
 # [Usage](id:usage)
 
 ## Import the module
@@ -99,3 +132,38 @@ Alternately, you can also import a previously trained model on an existing tree 
 var treeJson = dt.toJSON();
 dt.import(treeJson);
 ```
+
+# [Development](id:development)
+
+## Building from Source
+
+This project is written in TypeScript. To build from source:
+
+```bash
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Run tests
+npm test
+
+# Watch mode for development
+npm run build:watch
+```
+
+## Project Structure
+
+- `src/` - TypeScript source files
+- `lib/` - Compiled JavaScript output (generated)
+- `tst/` - Test files
+- `data/` - Sample datasets for testing
+
+## Contributing
+
+When contributing, please:
+1. Make changes in the `src/` directory
+2. Run `npm run build` to compile
+3. Ensure all tests pass with `npm test`
+4. The compiled JavaScript in `lib/` will be automatically generated

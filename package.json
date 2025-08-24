@@ -7,12 +7,39 @@
     "type": "git",
     "url": "git://github.com/serendipious/nodejs-decision-tree"
   },
-  "main": "./lib/decision-tree",
+  "main": "./lib/decision-tree.js",
+  "types": "./lib/decision-tree.d.ts",
+  "module": "./lib/decision-tree.js",
+  "exports": {
+    ".": {
+      "import": "./lib/decision-tree.js",
+      "require": "./lib/decision-tree.js",
+      "types": "./lib/decision-tree.d.ts"
+    }
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
   "dependencies": {
     "lodash": "^4.17.21"
   },
+  "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.10.0",
+    "mocha": "^10.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  },
   "scripts": {
-    "test": "NODE_PATH=. ./node_modules/.bin/mocha -R spec tst/*"
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha -R spec tst/*",
+    "test:watch": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha -R spec --watch tst/*",
+    "clean": "rm -rf lib",
+    "prepublishOnly": "npm run clean && npm run build",
+    "example:js": "node examples/javascript-usage.js",
+    "example:ts": "ts-node examples/typescript-usage.ts"
   },
   "engines": {
     "node": ">= 14.x"
@@ -26,10 +53,8 @@
     "learning",
     "decision tree",
     "machine learning",
-    "ID3"
+    "ID3",
+    "typescript"
   ],
-  "devDependencies": {
-    "mocha": "^10.1.0"
-  },
   "license": "MIT"
 }

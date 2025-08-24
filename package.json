@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.202",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^20.10.0",
     "esm": "^3.2.25",
     "mocha": "^10.1.0",
@@ -37,8 +38,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "test": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha --require esm -R spec tst/*.mjs",
-    "test:watch": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha --require esm -R spec --watch tst/*.mjs",
+    "test": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha --require ts-node/register -R spec tst/*.ts",
+    "test:watch": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha --require ts-node/register -R spec --watch tst/*.ts",
     "clean": "rm -rf lib",
     "prepublishOnly": "npm run clean && npm run build",
     "example:js": "node examples/javascript-usage.js",

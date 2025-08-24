@@ -4,18 +4,41 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import DecisionTree from '../lib/decision-tree.js';
 
+// Type definitions for test datasets
+interface Dataset<T = any> {
+  features: string[];
+  data: T[];
+}
+
+interface ObjectEvaluationData {
+  foo: boolean;
+  bar: boolean;
+  flim: boolean;
+  classification: { description?: string };
+}
+
+interface TicTacToeData {
+  [key: string]: any;
+  classification: string;
+}
+
+interface VotingData {
+  [key: string]: any;
+  classification: string;
+}
+
 // Helper function to load JSON files
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-function loadJSON(filename) {
+function loadJSON<T>(filename: string): T {
   const filePath = join(__dirname, '..', 'data', filename);
-  return JSON.parse(readFileSync(filePath, 'utf8'));
+  return JSON.parse(readFileSync(filePath, 'utf8')) as T;
 }
 
-const OBJECT_EVALUATION_DATASET = loadJSON('object-evaluation.json');
-const TIC_TAC_TOE_DATASET = loadJSON('tic-tac-toe.json');
-const VOTING_DATASET = loadJSON('voting.json');
+const OBJECT_EVALUATION_DATASET = loadJSON<Dataset<ObjectEvaluationData>>('object-evaluation.json');
+const TIC_TAC_TOE_DATASET = loadJSON<Dataset<TicTacToeData>>('tic-tac-toe.json');
+const VOTING_DATASET = loadJSON<Dataset<VotingData>>('voting.json');
 
 /**
  * Reported bugs from: https://github.com/serendipious/nodejs-decision-tree/issues

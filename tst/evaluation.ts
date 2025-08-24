@@ -1,9 +1,44 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import DecisionTree from '../lib/decision-tree.js';
 
-import OBJECT_EVALUATION_DATASET from '../data/object-evaluation.json' assert { type: 'json' };
-import TIC_TAC_TOE_DATASET from '../data/tic-tac-toe.json' assert { type: 'json' };
-import VOTING_DATASET from '../data/voting.json' assert { type: 'json' };
+// Type definitions for test datasets
+interface Dataset<T = any> {
+  features: string[];
+  data: T[];
+}
+
+interface ObjectEvaluationData {
+  foo: boolean;
+  bar: boolean;
+  flim: boolean;
+  classification: { description?: string };
+}
+
+interface TicTacToeData {
+  [key: string]: any;
+  classification: string;
+}
+
+interface VotingData {
+  [key: string]: any;
+  classification: string;
+}
+
+// Helper function to load JSON files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+function loadJSON<T>(filename: string): T {
+  const filePath = join(__dirname, '..', 'data', filename);
+  return JSON.parse(readFileSync(filePath, 'utf8')) as T;
+}
+
+const OBJECT_EVALUATION_DATASET = loadJSON<Dataset<ObjectEvaluationData>>('object-evaluation.json');
+const TIC_TAC_TOE_DATASET = loadJSON<Dataset<TicTacToeData>>('tic-tac-toe.json');
+const VOTING_DATASET = loadJSON<Dataset<VotingData>>('voting.json');
 
 describe('DecisionTree Decision Tree on Sample Datasets', function() {
   describe('Tic Tac Toe Dataset', function() {
@@ -43,7 +78,7 @@ describe('DecisionTree Decision Tree on Sample Datasets', function() {
     });
 
     it('should evaluate perfectly on training dataset', function() {
-      const data =  [
+      const data: ObjectEvaluationData[] = [
         {"foo":true, "bar":true, "flim":true, "classification":{"description":"foo bar flim"}},
         {"foo":false, "bar":true, "flim":true, "classification":{"description":"bar flim"}},
         {"foo":true, "bar":false, "flim":true, "classification":{"description":"foo flim"}},
@@ -58,7 +93,7 @@ describe('DecisionTree Decision Tree on Sample Datasets', function() {
     });
 
     it('should evaluate 87.5% on training dataset', function() {
-      const data =  [
+      const data: ObjectEvaluationData[] = [
         {"foo":true, "bar":true, "flim":true, "classification":{"description":"foo bar flim"}},
         {"foo":false, "bar":true, "flim":true, "classification":{"description":"bar flim"}},
         {"foo":true, "bar":false, "flim":true, "classification":{"description":"foo flim"}},

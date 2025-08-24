@@ -35,7 +35,10 @@ The module has been converted from JavaScript to TypeScript while maintaining **
 ├── examples/              # Usage examples
 │   ├── typescript-usage.ts
 │   └── javascript-usage.js
-└── tst/                   # Test files
+└── tst/                   # TypeScript test files
+    ├── decision-tree.ts
+    ├── evaluation.ts
+    └── reported-bugs.ts
 ```
 
 ## Usage Examples

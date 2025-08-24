@@ -160,13 +160,14 @@ npm run build:watch
 
 - `src/` - TypeScript source files
 - `lib/` - Compiled JavaScript output (generated)
-- `tst/` - Test files
+- `tst/` - TypeScript test files
 - `data/` - Sample datasets for testing
 
 ## Contributing
 
 When contributing, please:
-1. Make changes in the `src/` directory
-2. Run `npm run build` to compile
-3. Ensure all tests pass with `npm test`
-4. The compiled JavaScript in `lib/` will be automatically generated
+1. Make changes in the `src/` directory (TypeScript source)
+2. Update tests in the `tst/` directory (TypeScript tests)
+3. Run `npm run build` to compile
+4. Ensure all tests pass with `npm test`
+5. The compiled JavaScript in `lib/` will be automatically generated

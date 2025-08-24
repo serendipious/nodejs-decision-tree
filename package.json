@@ -27,13 +27,13 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.202",
+    "@types/lodash": "^4.17.20",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^20.10.0",
+    "@types/node": "^24.3.0",
     "esm": "^3.2.25",
-    "mocha": "^10.1.0",
+    "mocha": "^11.7.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.0"
+    "typescript": "^5.9.2"
   },
   "scripts": {
     "build": "tsc",

@@ -1,25 +1,25 @@
-Decision Tree for Node.js
-========================
+# Decision Tree for Node.js
 
 This Node.js module implements a Decision Tree using the [ID3 Algorithm](http://en.wikipedia.org/wiki/ID3_algorithm)
 
-# [Installation](id:installation)
+## Installation
 
-**Requires Node.js 20 or higher**
+**Requires Node.js 20 or higher** (ES modules support required)
 
-    npm install decision-tree
+```bash
+npm install decision-tree
+```
 
 ## TypeScript Support
 
-This module is written in TypeScript and provides full type definitions. The compiled JavaScript maintains full backward compatibility with existing Node.js and browser projects. **Requires Node.js 20+ for development and testing.**
+This module is written in TypeScript and provides full type definitions. The compiled JavaScript maintains full backward compatibility with existing Node.js and browser projects that support ES modules.
+
+**Note:** This package uses ES modules (`"type": "module"`), so CommonJS `require()` is not supported.
 
 ### TypeScript Usage
 
 ```typescript
 import DecisionTree from 'decision-tree';
-
-// Or with CommonJS
-const DecisionTree = require('decision-tree');
 
 // Full type safety for training data
 interface TrainingData {
@@ -42,18 +42,20 @@ dt.train(training_data);
 const prediction = dt.predict({ color: "blue", shape: "hexagon" });
 ```
 
-# [Usage](id:usage)
+## Usage
 
-## Import the module
+### Import the module
 
 ```js
-var DecisionTree = require('decision-tree');
+import DecisionTree from 'decision-tree';
 ```
 
-## Prepare training dataset
+**Important:** This package uses ES modules only. CommonJS `require()` is not supported.
+
+### Prepare training dataset
 
 ```js
-var training_data = [
+const training_data = [
   {"color":"blue", "shape":"square", "liked":false},
   {"color":"red", "shape":"square", "liked":false},
   {"color":"blue", "shape":"circle", "liked":true},
@@ -65,10 +67,10 @@ var training_data = [
 ];
 ```
 
-## Prepare test dataset
+### Prepare test dataset
 
 ```js
-var test_data = [
+const test_data = [
   {"color":"blue", "shape":"hexagon", "liked":false},
   {"color":"red", "shape":"hexagon", "liked":false},
   {"color":"yellow", "shape":"hexagon", "liked":true},
@@ -76,69 +78,105 @@ var test_data = [
 ];
 ```
 
-## Setup Target Class used for prediction
+### Setup Target Class used for prediction
 
 ```js
-var class_name = "liked";
+const class_name = "liked";
 ```
 
-## Setup Features to be used by decision tree
+### Setup Features to be used by decision tree
 
 ```js
-var features = ["color", "shape"];
+const features = ["color", "shape"];
 ```
 
-## Create decision tree and train the model
+### Create decision tree and train the model
 
+**Method 1: Separate instantiation and training**
 ```js
-var dt = new DecisionTree(class_name, features);
+const dt = new DecisionTree(class_name, features);
 dt.train(training_data);
 ```
 
-Alternately, you can also create and train the tree when instantiating the tree itself:
-
+**Method 2: Instantiate and train in one step**
 ```js
-var dt = new DecisionTree(training_data, class_name, features);
+const dt = new DecisionTree(training_data, class_name, features);
 ```
 
-## Predict class label for an instance
+**Note:** Method 2 returns a new instance rather than modifying the current one. This is equivalent to:
+```js
+const dt = new DecisionTree(class_name, features);
+dt.train(training_data);
+```
+
+### Predict class label for an instance
 
 ```js
-var predicted_class = dt.predict({
+const predicted_class = dt.predict({
   color: "blue",
   shape: "hexagon"
 });
 ```
 
-## Evaluate model on a dataset
+### Evaluate model on a dataset
 
 ```js
-var accuracy = dt.evaluate(test_data);
+const accuracy = dt.evaluate(test_data);
 ```
 
-## Export underlying model for visualization or inspection
+### Export underlying model for visualization or inspection
 
 ```js
-var treeJson = dt.toJSON();
+const treeJson = dt.toJSON();
 ```
 
-## Create a decision tree from a previously trained model
+**Note:** The exported model contains the tree structure but does not preserve the original training data. Only imported models have training data stored.
+
+### Create a decision tree from a previously trained model
 
 ```js
-var treeJson = dt.toJSON();
-var preTrainedDecisionTree = new DecisionTree(treeJson);
+const treeJson = dt.toJSON();
+const preTrainedDecisionTree = new DecisionTree(treeJson);
 ```
 
-Alternately, you can also import a previously trained model on an existing tree instance, assuming the features & class are the same:
+### Import a previously trained model on an existing tree instance
 
 ```js
-var treeJson = dt.toJSON();
+const treeJson = dt.toJSON();
 dt.import(treeJson);
 ```
 
-# [Development](id:development)
+## Data Validation and Limitations
 
-## Building from Source
+**Important:** This implementation is intentionally permissive and has limited validation:
+
+- **Feature names:** Only validates that features is an array, not element types
+- **Target column:** Does not validate that the target column exists in training data
+- **Empty datasets:** Allows empty training datasets (may result in unexpected behavior)
+- **Data types:** Accepts mixed data types without validation
+
+For production use, ensure your data meets these requirements:
+- Training data must be an array of objects
+- Each object should contain the target column
+- Feature values should be consistent across samples
+
+## Error Handling
+
+The package handles many edge cases gracefully but may fail silently in some scenarios:
+
+```js
+// This will work but may not produce expected results
+const dt = new DecisionTree('nonexistent', ['feature1']);
+dt.train([{ feature1: 'value1' }]); // Missing target column
+
+// This will work but may not produce expected results  
+const dt2 = new DecisionTree('target', ['feature1']);
+dt2.train([]); // Empty dataset
+```
+
+## Development
+
+### Building from Source
 
 This project is written in TypeScript. To build from source:
 
@@ -156,14 +194,14 @@ npm test
 npm run build:watch
 ```
 
-## Project Structure
+### Project Structure
 
 - `src/` - TypeScript source files
 - `lib/` - Compiled JavaScript output (generated)
 - `tst/` - TypeScript test files
 - `data/` - Sample datasets for testing
 
-## Contributing
+### Contributing
 
 When contributing, please:
 1. Make changes in the `src/` directory (TypeScript source)
@@ -171,3 +209,11 @@ When contributing, please:
 3. Run `npm run build` to compile
 4. Ensure all tests pass with `npm test`
 5. The compiled JavaScript in `lib/` will be automatically generated
+
+## Why Node.js 20+?
+
+This package requires Node.js 20 or higher because:
+- **ES Modules:** Uses native ES module support (`"type": "module"`)
+- **Modern Features:** Leverages ES2022 features for better performance
+- **Import Assertions:** Uses modern import syntax for better compatibility
+- **Performance:** Takes advantage of Node.js 20+ optimizations

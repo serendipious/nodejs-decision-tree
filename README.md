@@ -174,6 +174,60 @@ const dt2 = new DecisionTree('target', ['feature1']);
 dt2.train([]); // Empty dataset
 ```
 
+## Test Coverage
+
+This project maintains comprehensive test coverage to ensure reliability and correctness:
+
+### Current Test Statistics
+- **Total Tests:** 109 passing tests
+- **Test Categories:** 8 comprehensive test suites covering all aspects of the decision tree implementation
+- **Test Framework:** Mocha with TypeScript support
+- **Coverage Areas:**
+  - Core decision tree functionality
+  - Data validation and sanitization
+  - Edge cases and error handling
+  - Performance and scalability
+  - Type safety and interface validation
+  - Model persistence and import/export
+  - Prediction edge cases
+  - ID3 algorithm correctness
+
+### Test Suites
+
+| Test Suite | Description | Test Count |
+|------------|-------------|------------|
+| **Data Validation & Sanitization** | Input validation, feature validation, data type handling | 12 tests |
+| **Decision Tree Basics** | Core functionality, initialization, training, prediction | 9 tests |
+| **Edge Cases & Error Handling** | Empty datasets, missing features, invalid inputs | 8 tests |
+| **Sample Dataset Tests** | Real-world dataset validation (Tic-tac-toe, Voting, Object Evaluation) | 7 tests |
+| **ID3 Algorithm Tests** | Entropy calculations, feature selection, tree structure | 9 tests |
+| **Model Persistence** | Import/export functionality, data integrity | 15 tests |
+| **Performance & Scalability** | Large datasets, memory management, concurrent operations | 12 tests |
+| **Prediction Edge Cases** | Missing features, unknown values, data type mismatches | 12 tests |
+| **Type Safety & Interface Validation** | TypeScript type checking, interface consistency | 10 tests |
+| **Reported Bugs** | Regression tests for previously reported issues | 2 tests |
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Build and test
+npm run build && npm test
+```
+
+### Test Quality Standards
+
+- **100% Pass Rate:** All tests must pass before any code changes are merged
+- **Comprehensive Coverage:** Tests cover happy paths, edge cases, and error scenarios
+- **Performance Testing:** Includes tests for large datasets and memory efficiency
+- **Type Safety:** Full TypeScript type checking and interface validation
+- **Real-world Scenarios:** Tests with actual datasets (tic-tac-toe, voting records, etc.)
+
 ## Development
 
 ### Building from Source
@@ -203,12 +257,95 @@ npm run build:watch
 
 ### Contributing
 
-When contributing, please:
-1. Make changes in the `src/` directory (TypeScript source)
-2. Update tests in the `tst/` directory (TypeScript tests)
-3. Run `npm run build` to compile
-4. Ensure all tests pass with `npm test`
-5. The compiled JavaScript in `lib/` will be automatically generated
+We welcome contributions to improve this decision tree implementation! To ensure high-quality contributions, please follow these guidelines:
+
+#### Before You Start
+
+1. **Check existing issues** - Look for open issues or discussions that might be related to your contribution
+2. **Fork the repository** - Create your own fork to work on
+3. **Create a feature branch** - Use a descriptive branch name like `feature/your-feature-name` or `fix/issue-description`
+
+#### Development Workflow
+
+1. **Make changes in the `src/` directory** - All source code changes should be in TypeScript
+2. **Update tests in the `tst/` directory** - Add comprehensive tests for new functionality
+3. **Run the build process** - Execute `npm run build` to compile TypeScript
+4. **Run all tests** - Ensure `npm test` passes with 100% success rate
+5. **Test your changes** - Verify your changes work as expected
+
+#### Pull Request Requirements
+
+To ensure high-quality contributions, all pull requests must include:
+
+**Code Quality:**
+- ✅ **TypeScript compliance** - All code must be properly typed and compile without errors
+- ✅ **Test coverage** - New features must include comprehensive tests
+- ✅ **Backward compatibility** - Changes should not break existing functionality
+- ✅ **Performance consideration** - Large datasets and edge cases should be handled efficiently
+
+**Documentation:**
+- ✅ **Clear commit messages** - Use conventional commit format (e.g., `feat: add new feature`, `fix: resolve issue`)
+- ✅ **Updated README** - If adding new features, update relevant documentation
+- ✅ **Code comments** - Complex logic should be well-documented
+- ✅ **Type definitions** - Ensure all public APIs have proper TypeScript definitions
+
+**Testing Requirements:**
+- ✅ **All tests pass** - The test suite must pass completely (currently 109 tests)
+- ✅ **New test cases** - Add tests for new functionality in appropriate test files:
+  - `decision-tree.ts` - Core functionality tests
+  - `data-validation.ts` - Input validation and sanitization
+  - `edge-cases.ts` - Edge cases and error handling
+  - `performance-scalability.ts` - Performance and scalability tests
+  - `type-safety.ts` - TypeScript type safety validation
+- ✅ **Edge case coverage** - Test boundary conditions and error scenarios
+- ✅ **Performance testing** - For performance-related changes, include benchmarks
+
+**Code Style:**
+- ✅ **Consistent formatting** - Follow existing code style and patterns
+- ✅ **ES modules** - Maintain ES module compatibility (no CommonJS)
+- ✅ **Node.js 20+ compatibility** - Ensure compatibility with the minimum Node.js version
+- ✅ **Lodash usage** - Use existing lodash utilities where appropriate
+
+#### Pull Request Template
+
+When creating a pull request, please include:
+
+```markdown
+## Description
+Brief description of changes and motivation.
+
+## Type of Change
+- [ ] Bug fix (non-breaking change that fixes an issue)
+- [ ] New feature (non-breaking change that adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
+
+## Testing
+- [ ] All existing tests pass
+- [ ] New tests added for new functionality
+- [ ] Manual testing completed
+- [ ] Performance impact assessed (if applicable)
+
+## Checklist
+- [ ] Code follows existing style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated (if needed)
+- [ ] No breaking changes (or clearly documented if intentional)
+```
+
+#### Review Process
+
+- All pull requests require review and approval
+- Maintainers will check code quality, test coverage, and documentation
+- Feedback will be provided for any required changes
+- Once approved, changes will be merged to the main branch
+
+#### Getting Help
+
+If you need help or have questions:
+- Open an issue for discussion before starting work on large changes
+- Check existing issues and discussions
+- Review the test files to understand expected behavior patterns
 
 ## Why Node.js 20+?
 

@@ -45,7 +45,9 @@
     "example:js": "node examples/javascript-usage.js",
     "example:ts": "ts-node examples/typescript-usage.ts",
     "example:rf-js": "node examples/random-forest-usage.js",
-    "example:rf-ts": "ts-node examples/random-forest-usage.ts"
+    "example:rf-ts": "ts-node examples/random-forest-usage.ts",
+    "example:xgb-js": "node examples/xgboost-usage.js",
+    "example:xgb-ts": "ts-node examples/xgboost-usage.ts"
   },
   "engines": {
     "node": ">= 20.x"

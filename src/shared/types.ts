@@ -47,6 +47,50 @@ export interface RandomForestData {
   data: any[];
 }
 
+export interface XGBoostConfig {
+  nEstimators?: number;           // Number of boosting rounds
+  learningRate?: number;          // Step size shrinkage (eta)
+  maxDepth?: number;              // Maximum tree depth
+  minChildWeight?: number;        // Minimum sum of instance weight in leaf
+  subsample?: number;             // Fraction of samples for each tree
+  colsampleByTree?: number;       // Fraction of features for each tree
+  regAlpha?: number;              // L1 regularization (alpha)
+  regLambda?: number;             // L2 regularization (lambda)
+  objective?: 'regression' | 'binary' | 'multiclass'; // Loss function
+  earlyStoppingRounds?: number;   // Early stopping patience
+  randomState?: number;           // Random seed
+  validationFraction?: number;    // Fraction for validation set
+}
+
+export interface XGBoostData {
+  trees: DecisionTreeData[];
+  target: string;
+  features: string[];
+  config: XGBoostConfig;
+  data: any[];
+  baseScore: number;
+  bestIteration: number;
+  boostingHistory: BoostingHistory;
+}
+
+export interface BoostingHistory {
+  trainLoss: number[];
+  validationLoss: number[];
+  iterations: number[];
+}
+
+export interface GradientHessian {
+  gradient: number[];
+  hessian: number[];
+}
+
+export interface WeightedSample {
+  data: any[];
+  weights: number[];
+  gradients: number[];
+  hessians: number[];
+}
+
 // Node types constant
 export const NODE_TYPES = {
   RESULT: 'result',

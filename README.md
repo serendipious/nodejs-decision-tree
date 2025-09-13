@@ -256,6 +256,106 @@ Random Forest typically provides:
 - **Feature importance** scores across the ensemble
 - **Parallel training** capability for better performance
 
+## XGBoost Usage
+
+XGBoost (eXtreme Gradient Boosting) is a powerful gradient boosting algorithm that builds an ensemble of decision trees sequentially, where each tree corrects the errors of the previous ones.
+
+### Basic XGBoost Usage
+
+```js
+import XGBoost from 'decision-tree/xgboost';
+
+// Basic usage
+const xgb = new XGBoost('liked', ['color', 'shape', 'size']);
+xgb.train(training_data);
+
+// Make predictions
+const prediction = xgb.predict({ color: 'blue', shape: 'hexagon', size: 'medium' });
+
+// Evaluate accuracy
+const accuracy = xgb.evaluate(test_data);
+console.log(`Accuracy: ${(accuracy * 100).toFixed(1)}%`);
+```
+
+### XGBoost Configuration
+
+```js
+const config = {
+  nEstimators: 100,           // Number of boosting rounds (default: 100)
+  learningRate: 0.1,          // Step size shrinkage (default: 0.1)
+  maxDepth: 6,                // Maximum tree depth (default: 6)
+  minChildWeight: 1,          // Minimum sum of instance weight in leaf (default: 1)
+  subsample: 1.0,             // Fraction of samples for each tree (default: 1.0)
+  colsampleByTree: 1.0,       // Fraction of features for each tree (default: 1.0)
+  regAlpha: 0,                // L1 regularization (default: 0)
+  regLambda: 1,               // L2 regularization (default: 1)
+  objective: 'regression',    // Loss function: 'regression', 'binary', 'multiclass'
+  earlyStoppingRounds: 10,    // Early stopping patience (default: undefined)
+  randomState: 42,            // Random seed for reproducibility
+  validationFraction: 0.2     // Fraction for validation set (default: 0.2)
+};
+
+const xgb = new XGBoost('liked', ['color', 'shape', 'size'], config);
+xgb.train(training_data);
+```
+
+### XGBoost Features
+
+```js
+// Get feature importance scores
+const importance = xgb.getFeatureImportance();
+console.log('Feature importance:', importance);
+
+// Get boosting history
+const history = xgb.getBoostingHistory();
+console.log('Training loss:', history.trainLoss);
+console.log('Validation loss:', history.validationLoss);
+
+// Get best iteration (useful with early stopping)
+const bestIteration = xgb.getBestIteration();
+console.log(`Best iteration: ${bestIteration}`);
+
+// Get number of trees
+const treeCount = xgb.getTreeCount();
+console.log(`Number of trees: ${treeCount}`);
+
+// Get configuration
+const config = xgb.getConfig();
+console.log('Configuration:', config);
+```
+
+### XGBoost Model Persistence
+
+```js
+// Export model
+const modelJson = xgb.toJSON();
+
+// Import model
+const newXgb = new XGBoost(modelJson);
+
+// Or import into existing instance
+xgb.import(modelJson);
+```
+
+### Algorithm Comparison
+
+| Feature | Decision Tree | Random Forest | XGBoost |
+|---------|---------------|---------------|---------|
+| **Algorithm** | Single tree (ID3) | Ensemble of trees | Gradient boosting |
+| **Overfitting** | Prone to overfitting | Reduces overfitting | Best overfitting control |
+| **Accuracy** | Good on simple data | Better on complex data | Best on complex data |
+| **Interpretability** | Highly interpretable | Less interpretable | Least interpretable |
+| **Training Time** | Fast | Medium | Slowest |
+| **Prediction Time** | Fast | Medium | Fast |
+| **Stability** | Less stable | More stable | Most stable |
+| **Feature Selection** | All features | Random subset per tree | Random subset per tree |
+| **Bootstrap Sampling** | No | Yes (by default) | Yes (configurable) |
+| **Parallel Training** | No | Yes (trees independent) | No (sequential) |
+| **Regularization** | No | No | Yes (L1, L2) |
+| **Early Stopping** | No | No | Yes |
+| **Learning Rate** | N/A | N/A | Yes |
+| **Gradient Boosting** | No | No | Yes |
+
 ## Data Validation and Limitations
 
 **Important:** This implementation is intentionally permissive and has limited validation:
@@ -289,12 +389,13 @@ dt2.train([]); // Empty dataset
 This project maintains comprehensive test coverage to ensure reliability and correctness:
 
 ### Current Test Statistics
-- **Total Tests:** 222 passing tests
-- **Test Categories:** 11 comprehensive test suites covering Decision Trees and Random Forests
+- **Total Tests:** 380 passing tests
+- **Test Categories:** 14 comprehensive test suites covering Decision Trees, Random Forests, and XGBoost
 - **Test Framework:** Mocha with TypeScript support
 - **Coverage Areas:**
   - Core decision tree functionality
   - Random Forest ensemble learning
+  - XGBoost gradient boosting
   - Data validation and sanitization
   - Edge cases and error handling
   - Performance and scalability
@@ -330,6 +431,24 @@ This project maintains comprehensive test coverage to ensure reliability and cor
 | **Random Forest Performance** | Performance testing with large numbers of estimators | 2 tests |
 | **Random Forest on Sample Datasets** | Real-world dataset validation with Random Forest | 3 tests |
 | **Random Forest Utility Functions** | Bootstrap sampling, feature selection, majority voting utilities | 20 tests |
+| **XGBoost Basics** | Core XGBoost functionality, configuration, training | 10 tests |
+| **XGBoost Configuration** | Different parameter combinations and edge cases | 11 tests |
+| **XGBoost Gradient Boosting** | Gradient boosting iterations and loss tracking | 3 tests |
+| **XGBoost Early Stopping** | Early stopping functionality and validation | 3 tests |
+| **XGBoost Feature Importance** | Feature importance calculation for XGBoost | 3 tests |
+| **XGBoost Model Persistence** | Export/import functionality for XGBoost models | 4 tests |
+| **XGBoost Edge Cases** | Edge cases specific to XGBoost implementation | 5 tests |
+| **XGBoost Performance** | Performance testing with large numbers of estimators | 2 tests |
+| **XGBoost on Sample Datasets** | Real-world dataset validation with XGBoost | 3 tests |
+| **XGBoost Loss Functions** | Loss functions (MSE, Logistic, Cross-Entropy) | 15 tests |
+| **XGBoost Gradient Boosting Utils** | Gradient boosting utility functions | 8 tests |
+| **XGBoost Edge Cases - Empty Datasets** | Empty and invalid dataset handling | 7 tests |
+| **XGBoost Edge Cases - Configuration** | Configuration edge cases and validation | 20 tests |
+| **XGBoost Edge Cases - Prediction** | Prediction edge cases and validation | 9 tests |
+| **XGBoost Edge Cases - Model Persistence** | Model persistence edge cases | 9 tests |
+| **XGBoost Edge Cases - Feature Importance** | Feature importance edge cases | 3 tests |
+| **XGBoost Edge Cases - Boosting History** | Boosting history edge cases | 3 tests |
+| **XGBoost Edge Cases - Performance** | Performance edge cases | 4 tests |
 
 ### Running Tests
 

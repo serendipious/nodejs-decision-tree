@@ -517,6 +517,13 @@ npm test
 npm run build:watch
 ```
 
+## Windows Users
+
+If you encounter issues with `npm test`, this project uses cross-env for cross-platform compatibility. The setup should work automatically, but if you encounter issues:
+
+1. Ensure you're using Git Bash or WSL
+2. Or use PowerShell/Command Prompt after running `npm install`
+
 ### Project Structure
 
 - `src/` - TypeScript source files

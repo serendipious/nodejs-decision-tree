@@ -30,6 +30,7 @@
     "@types/lodash": "^4.17.20",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.3.0",
+    "cross-env": "^10.0.0",
     "esm": "^3.2.25",
     "mocha": "^11.7.1",
     "ts-node": "^10.9.2",
@@ -38,7 +39,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "test": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha --require ts-node/register -R spec tst/*.ts",
+    "test": "npm run build && cross-env NODE_PATH=. mocha --require ts-node/register -R spec tst/*.ts",
     "test:watch": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha --require ts-node/register -R spec --watch tst/*.ts",
     "clean": "rm -rf lib",
     "prepublishOnly": "npm run clean && npm run build",

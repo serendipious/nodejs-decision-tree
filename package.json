@@ -1,7 +1,7 @@
 {
   "name": "decision-tree",
-  "description": "NodeJS implementation of decision tree using ID3 algorithm (Node.js 20+)",
-  "version": "0.5.0",
+  "description": "NodeJS implementation of decision tree, random forest, and XGBoost algorithms with comprehensive performance testing (Node.js 20+)",
+  "version": "1.0.0",
   "author": "Ankit Kuwadekar",
   "repository": {
     "type": "git",
@@ -60,8 +60,13 @@
     "machine",
     "learning",
     "decision tree",
+    "random forest",
+    "xgboost",
+    "gradient boosting",
+    "ensemble learning",
     "machine learning",
     "ID3",
+    "performance testing",
     "typescript"
   ],
   "license": "MIT"

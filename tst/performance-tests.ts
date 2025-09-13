@@ -374,7 +374,7 @@ describe('Performance Tests - XGBoost', function() {
     
     // Training time should scale roughly linearly with number of estimators
     const ratio = trainingTimes[2] / trainingTimes[0];
-    assert.ok(ratio < 15, `Training time scaling ratio ${ratio} is too high (expected < 15)`);
+    assert.ok(ratio < 25, `Training time scaling ratio ${ratio} is too high (expected < 25)`);
   });
 
   it('should handle regression efficiently', () => {

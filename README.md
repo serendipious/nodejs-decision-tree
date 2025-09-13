@@ -1,13 +1,48 @@
-# Decision Tree for Node.js
+# Machine Learning Algorithms for Node.js
 
-This Node.js module implements a Decision Tree using the [ID3 Algorithm](http://en.wikipedia.org/wiki/ID3_algorithm)
+A comprehensive Node.js library implementing three powerful machine learning algorithms: **Decision Tree**, **Random Forest**, and **XGBoost**. Built with TypeScript and featuring extensive performance testing, this library provides production-ready implementations with full type safety and comprehensive test coverage.
+
+## Table of Contents
+
+- [🚀 Features](#-features)
+- [Installation](#installation)
+- [TypeScript Support](#typescript-support)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
+  - [Decision Tree](#decision-tree-usage)
+  - [Random Forest](#random-forest-usage)
+  - [XGBoost](#xgboost-usage)
+- [Algorithm Comparison](#algorithm-comparison)
+- [Performance Benchmarks](#performance-benchmarks)
+- [Test Coverage](#test-coverage)
+- [Development](#development)
+- [Contributing](#contributing)
+- [Why Node.js 20+?](#why-nodejs-20)
+
+## 🚀 Features
+
+- **Three ML Algorithms**: Decision Tree (ID3), Random Forest, and XGBoost
+- **TypeScript Support**: Full type safety and IntelliSense support
+- **Performance Optimized**: Comprehensive performance testing with strict benchmarks
+- **Production Ready**: 408 tests with 100% pass rate and extensive edge case coverage
+- **Model Persistence**: Export/import trained models as JSON
+- **Feature Importance**: Built-in feature importance calculation for all algorithms
+- **Early Stopping**: XGBoost early stopping to prevent overfitting
+- **Regularization**: L1 and L2 regularization support in XGBoost
+- **ES Modules**: Modern JavaScript with native ES module support
 
 ## Installation
 
-**Requires Node.js 20 or higher** (ES modules support required)
+**Requires Node.js 20+ or Bun 1.0+** (ES modules support required)
 
+### Using npm
 ```bash
 npm install decision-tree
+```
+
+### Using Bun
+```bash
+bun add decision-tree
 ```
 
 ## TypeScript Support
@@ -21,39 +56,81 @@ This module is written in TypeScript and provides full type definitions. The com
 ```typescript
 import DecisionTree from 'decision-tree';
 import RandomForest from 'decision-tree/random-forest';
+import XGBoost from 'decision-tree/xgboost';
 
 // Full type safety for training data
 interface TrainingData {
   color: string;
   shape: string;
+  size: string;
   liked: boolean;
 }
 
 const training_data: TrainingData[] = [
+  {"color":"blue", "shape":"square", "size":"small", "liked":false},
+  {"color":"red", "shape":"square", "size":"large", "liked":false},
+  {"color":"blue", "shape":"circle", "size":"medium", "liked":true},
+  {"color":"red", "shape":"circle", "size":"small", "liked":true}
+];
+
+// Decision Tree
+const dt = new DecisionTree('liked', ['color', 'shape', 'size']);
+dt.train(training_data);
+const prediction = dt.predict({ color: "blue", shape: "hexagon", size: "medium" });
+
+// Random Forest
+const rf = new RandomForest('liked', ['color', 'shape', 'size'], {
+  nEstimators: 100,
+  maxFeatures: 'sqrt',
+  randomState: 42
+});
+rf.train(training_data);
+const rfPrediction = rf.predict({ color: "blue", shape: "hexagon", size: "medium" });
+
+// XGBoost
+const xgb = new XGBoost('liked', ['color', 'shape', 'size'], {
+  nEstimators: 100,
+  learningRate: 0.1,
+  objective: 'binary'
+});
+xgb.train(training_data);
+const xgbPrediction = xgb.predict({ color: "blue", shape: "hexagon", size: "medium" });
+```
+
+## Quick Start
+
+```js
+import DecisionTree from 'decision-tree';
+import RandomForest from 'decision-tree/random-forest';
+import XGBoost from 'decision-tree/xgboost';
+
+// Sample data
+const data = [
   {"color":"blue", "shape":"square", "liked":false},
   {"color":"red", "shape":"square", "liked":false},
   {"color":"blue", "shape":"circle", "liked":true},
   {"color":"red", "shape":"circle", "liked":true}
 ];
 
-// Decision Tree
+// Train and predict with Decision Tree
 const dt = new DecisionTree('liked', ['color', 'shape']);
-dt.train(training_data);
+dt.train(data);
 const prediction = dt.predict({ color: "blue", shape: "hexagon" });
 
-// Random Forest
-const rf = new RandomForest('liked', ['color', 'shape'], {
-  nEstimators: 100,
-  maxFeatures: 'sqrt',
-  randomState: 42
-});
-rf.train(training_data);
+// Train and predict with Random Forest
+const rf = new RandomForest('liked', ['color', 'shape'], { nEstimators: 100 });
+rf.train(data);
 const rfPrediction = rf.predict({ color: "blue", shape: "hexagon" });
+
+// Train and predict with XGBoost
+const xgb = new XGBoost('liked', ['color', 'shape'], { nEstimators: 100, objective: 'binary' });
+xgb.train(data);
+const xgbPrediction = xgb.predict({ color: "blue", shape: "hexagon" });
 ```
 
 ## Usage
 
-### Import the module
+### Decision Tree Usage
 
 ```js
 import DecisionTree from 'decision-tree';
@@ -155,9 +232,9 @@ const treeJson = dt.toJSON();
 dt.import(treeJson);
 ```
 
-## Random Forest Usage
+### Random Forest Usage
 
-This package now includes a Random Forest implementation that provides better performance and reduced overfitting compared to single Decision Trees.
+This package includes a Random Forest implementation that provides better performance and reduced overfitting compared to single Decision Trees.
 
 ### Import Random Forest
 
@@ -256,7 +333,7 @@ Random Forest typically provides:
 - **Feature importance** scores across the ensemble
 - **Parallel training** capability for better performance
 
-## XGBoost Usage
+### XGBoost Usage
 
 XGBoost (eXtreme Gradient Boosting) is a powerful gradient boosting algorithm that builds an ensemble of decision trees sequentially, where each tree corrects the errors of the previous ones.
 
@@ -337,16 +414,19 @@ const newXgb = new XGBoost(modelJson);
 xgb.import(modelJson);
 ```
 
-### Algorithm Comparison
+## Algorithm Comparison
+
+Choose the right algorithm for your use case:
 
 | Feature | Decision Tree | Random Forest | XGBoost |
 |---------|---------------|---------------|---------|
+| **Best For** | Simple data, interpretability | General purpose, balanced performance | Complex data, highest accuracy |
 | **Algorithm** | Single tree (ID3) | Ensemble of trees | Gradient boosting |
 | **Overfitting** | Prone to overfitting | Reduces overfitting | Best overfitting control |
 | **Accuracy** | Good on simple data | Better on complex data | Best on complex data |
 | **Interpretability** | Highly interpretable | Less interpretable | Least interpretable |
-| **Training Time** | Fast | Medium | Slowest |
-| **Prediction Time** | Fast | Medium | Fast |
+| **Training Time** | < 100ms | < 500ms | < 1000ms |
+| **Prediction Time** | < 10ms | < 50ms | < 20ms |
 | **Stability** | Less stable | More stable | Most stable |
 | **Feature Selection** | All features | Random subset per tree | Random subset per tree |
 | **Bootstrap Sampling** | No | Yes (by default) | Yes (configurable) |
@@ -355,6 +435,14 @@ xgb.import(modelJson);
 | **Early Stopping** | No | No | Yes |
 | **Learning Rate** | N/A | N/A | Yes |
 | **Gradient Boosting** | No | No | Yes |
+
+### When to Use Each Algorithm
+
+**Decision Tree**: Use when you need interpretable models, have simple datasets, or require fast training/prediction.
+
+**Random Forest**: Use as a general-purpose solution that provides good accuracy with reduced overfitting and built-in feature importance.
+
+**XGBoost**: Use when you need the highest possible accuracy on complex datasets and can afford longer training times.
 
 ## Data Validation and Limitations
 
@@ -475,6 +563,7 @@ Performance tests cover:
 
 ### Running Tests
 
+#### Using npm
 ```bash
 # Run all tests
 npm test
@@ -487,6 +576,21 @@ npm test -- --grep "Performance Tests"
 
 # Build and test
 npm run build && npm test
+```
+
+#### Using Bun
+```bash
+# Run all tests
+bun test
+
+# Run tests in watch mode (for development)
+bun test --watch
+
+# Run performance tests specifically
+bun test --grep "Performance Tests"
+
+# Build and test
+bun run build && bun test
 ```
 
 ### Test Quality Standards
@@ -503,6 +607,7 @@ npm run build && npm test
 
 This project is written in TypeScript. To build from source:
 
+#### Using npm
 ```bash
 # Install dependencies
 npm install
@@ -515,6 +620,21 @@ npm test
 
 # Watch mode for development
 npm run build:watch
+```
+
+#### Using Bun
+```bash
+# Install dependencies
+bun install
+
+# Build the project
+bun run build
+
+# Run tests
+bun run test
+
+# Watch mode for development
+bun run build:watch
 ```
 
 ## Windows Users
@@ -533,100 +653,39 @@ If you encounter issues with `npm test`, this project uses cross-env for cross-p
 
 ### Contributing
 
-We welcome contributions to improve this decision tree implementation! To ensure high-quality contributions, please follow these guidelines:
+We welcome contributions to improve this machine learning library! Please see our [Contributing Guide](CONTRIBUTING.md) for detailed information on how to contribute.
 
-#### Before You Start
+**Quick Start for Contributors:**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes in the `src/` directory
+4. Add comprehensive tests in the `tst/` directory
+5. Run tests to ensure all pass (`npm test` or `bun test`)
+6. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+7. Push to your branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
 
-1. **Check existing issues** - Look for open issues or discussions that might be related to your contribution
-2. **Fork the repository** - Create your own fork to work on
-3. **Create a feature branch** - Use a descriptive branch name like `feature/your-feature-name` or `fix/issue-description`
+**Key Requirements:**
+- ✅ All 408 tests must pass
+- ✅ TypeScript compliance and proper typing
+- ✅ Comprehensive test coverage for new features
+- ✅ Performance considerations for large datasets
+- ✅ Clear documentation and commit messages
 
-#### Development Workflow
+For detailed guidelines, code style, and testing requirements, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-1. **Make changes in the `src/` directory** - All source code changes should be in TypeScript
-2. **Update tests in the `tst/` directory** - Add comprehensive tests for new functionality
-3. **Run the build process** - Execute `npm run build` to compile TypeScript
-4. **Run all tests** - Ensure `npm test` passes with 100% success rate
-5. **Test your changes** - Verify your changes work as expected
+## Why Node.js 20+ or Bun 1.0+?
 
-#### Pull Request Requirements
-
-To ensure high-quality contributions, all pull requests must include:
-
-**Code Quality:**
-- ✅ **TypeScript compliance** - All code must be properly typed and compile without errors
-- ✅ **Test coverage** - New features must include comprehensive tests
-- ✅ **Backward compatibility** - Changes should not break existing functionality
-- ✅ **Performance consideration** - Large datasets and edge cases should be handled efficiently
-
-**Documentation:**
-- ✅ **Clear commit messages** - Use conventional commit format (e.g., `feat: add new feature`, `fix: resolve issue`)
-- ✅ **Updated README** - If adding new features, update relevant documentation
-- ✅ **Code comments** - Complex logic should be well-documented
-- ✅ **Type definitions** - Ensure all public APIs have proper TypeScript definitions
-
-**Testing Requirements:**
-- ✅ **All tests pass** - The test suite must pass completely (currently 109 tests)
-- ✅ **New test cases** - Add tests for new functionality in appropriate test files:
-  - `decision-tree.ts` - Core functionality tests
-  - `data-validation.ts` - Input validation and sanitization
-  - `edge-cases.ts` - Edge cases and error handling
-  - `performance-scalability.ts` - Performance and scalability tests
-  - `type-safety.ts` - TypeScript type safety validation
-- ✅ **Edge case coverage** - Test boundary conditions and error scenarios
-- ✅ **Performance testing** - For performance-related changes, include benchmarks
-
-**Code Style:**
-- ✅ **Consistent formatting** - Follow existing code style and patterns
-- ✅ **ES modules** - Maintain ES module compatibility (no CommonJS)
-- ✅ **Node.js 20+ compatibility** - Ensure compatibility with the minimum Node.js version
-- ✅ **Lodash usage** - Use existing lodash utilities where appropriate
-
-#### Pull Request Template
-
-When creating a pull request, please include:
-
-```markdown
-## Description
-Brief description of changes and motivation.
-
-## Type of Change
-- [ ] Bug fix (non-breaking change that fixes an issue)
-- [ ] New feature (non-breaking change that adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Documentation update
-
-## Testing
-- [ ] All existing tests pass
-- [ ] New tests added for new functionality
-- [ ] Manual testing completed
-- [ ] Performance impact assessed (if applicable)
-
-## Checklist
-- [ ] Code follows existing style guidelines
-- [ ] Self-review completed
-- [ ] Documentation updated (if needed)
-- [ ] No breaking changes (or clearly documented if intentional)
-```
-
-#### Review Process
-
-- All pull requests require review and approval
-- Maintainers will check code quality, test coverage, and documentation
-- Feedback will be provided for any required changes
-- Once approved, changes will be merged to the main branch
-
-#### Getting Help
-
-If you need help or have questions:
-- Open an issue for discussion before starting work on large changes
-- Check existing issues and discussions
-- Review the test files to understand expected behavior patterns
-
-## Why Node.js 20+?
-
-This package requires Node.js 20 or higher because:
+This package requires Node.js 20+ or Bun 1.0+ because:
 - **ES Modules:** Uses native ES module support (`"type": "module"`)
 - **Modern Features:** Leverages ES2022 features for better performance
 - **Import Assertions:** Uses modern import syntax for better compatibility
-- **Performance:** Takes advantage of Node.js 20+ optimizations
+- **Performance:** Takes advantage of Node.js 20+ or Bun 1.0+ optimizations
+
+### Bun Compatibility
+
+Bun is fully supported and offers several advantages:
+- **Faster Installation:** Bun's package manager is significantly faster than npm
+- **Built-in TypeScript:** No need for ts-node or additional TypeScript tooling
+- **Faster Test Execution:** Bun's test runner is optimized for speed
+- **Better Performance:** Generally faster execution for JavaScript/TypeScript code

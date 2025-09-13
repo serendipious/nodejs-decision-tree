@@ -389,8 +389,8 @@ dt2.train([]); // Empty dataset
 This project maintains comprehensive test coverage to ensure reliability and correctness:
 
 ### Current Test Statistics
-- **Total Tests:** 380 passing tests
-- **Test Categories:** 14 comprehensive test suites covering Decision Trees, Random Forests, and XGBoost
+- **Total Tests:** 408 passing tests
+- **Test Categories:** 15 comprehensive test suites covering Decision Trees, Random Forests, XGBoost, and Performance
 - **Test Framework:** Mocha with TypeScript support
 - **Coverage Areas:**
   - Core decision tree functionality
@@ -449,6 +449,29 @@ This project maintains comprehensive test coverage to ensure reliability and cor
 | **XGBoost Edge Cases - Feature Importance** | Feature importance edge cases | 3 tests |
 | **XGBoost Edge Cases - Boosting History** | Boosting history edge cases | 3 tests |
 | **XGBoost Edge Cases - Performance** | Performance edge cases | 4 tests |
+| **Performance Tests - Decision Tree** | Decision Tree performance benchmarks | 6 tests |
+| **Performance Tests - Random Forest** | Random Forest performance benchmarks | 7 tests |
+| **Performance Tests - XGBoost** | XGBoost performance benchmarks | 8 tests |
+| **Performance Tests - Algorithm Comparison** | Cross-algorithm performance comparison | 4 tests |
+| **Performance Tests - Edge Cases** | Performance edge cases and stress tests | 3 tests |
+
+### Performance Benchmarks
+
+The library includes comprehensive performance tests to ensure all algorithms meet speed requirements:
+
+- **Decision Tree**: < 100ms training, < 10ms prediction
+- **Random Forest**: < 500ms training, < 50ms prediction  
+- **XGBoost**: < 1000ms training, < 20ms prediction
+- **Memory Usage**: < 50MB for large datasets
+- **Scalability**: Linear scaling with dataset size and tree count
+
+Performance tests cover:
+- Training time benchmarks for small, medium, and large datasets
+- Prediction speed tests with multiple iterations
+- Memory usage monitoring for large datasets
+- Algorithm comparison tests (Decision Tree vs Random Forest vs XGBoost)
+- Concurrent operations and edge case performance
+- Early stopping and regularization efficiency
 
 ### Running Tests
 
@@ -458,6 +481,9 @@ npm test
 
 # Run tests in watch mode (for development)
 npm run test:watch
+
+# Run performance tests specifically
+npm test -- --grep "Performance Tests"
 
 # Build and test
 npm run build && npm test

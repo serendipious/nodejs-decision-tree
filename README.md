@@ -20,6 +20,7 @@ This module is written in TypeScript and provides full type definitions. The com
 
 ```typescript
 import DecisionTree from 'decision-tree';
+import RandomForest from 'decision-tree/random-forest';
 
 // Full type safety for training data
 interface TrainingData {
@@ -35,11 +36,19 @@ const training_data: TrainingData[] = [
   {"color":"red", "shape":"circle", "liked":true}
 ];
 
+// Decision Tree
 const dt = new DecisionTree('liked', ['color', 'shape']);
 dt.train(training_data);
-
-// Type-safe prediction
 const prediction = dt.predict({ color: "blue", shape: "hexagon" });
+
+// Random Forest
+const rf = new RandomForest('liked', ['color', 'shape'], {
+  nEstimators: 100,
+  maxFeatures: 'sqrt',
+  randomState: 42
+});
+rf.train(training_data);
+const rfPrediction = rf.predict({ color: "blue", shape: "hexagon" });
 ```
 
 ## Usage
@@ -146,6 +155,107 @@ const treeJson = dt.toJSON();
 dt.import(treeJson);
 ```
 
+## Random Forest Usage
+
+This package now includes a Random Forest implementation that provides better performance and reduced overfitting compared to single Decision Trees.
+
+### Import Random Forest
+
+```js
+import RandomForest from 'decision-tree/random-forest';
+```
+
+### Basic Random Forest Usage
+
+```js
+const training_data = [
+  {"color":"blue", "shape":"square", "liked":false},
+  {"color":"red", "shape":"square", "liked":false},
+  {"color":"blue", "shape":"circle", "liked":true},
+  {"color":"red", "shape":"circle", "liked":true},
+  {"color":"blue", "shape":"hexagon", "liked":false},
+  {"color":"red", "shape":"hexagon", "liked":false},
+  {"color":"yellow", "shape":"hexagon", "liked":true},
+  {"color":"yellow", "shape":"circle", "liked":true}
+];
+
+const test_data = [
+  {"color":"blue", "shape":"hexagon", "liked":false},
+  {"color":"yellow", "shape":"circle", "liked":true}
+];
+
+const class_name = "liked";
+const features = ["color", "shape"];
+
+// Create and train Random Forest
+const rf = new RandomForest(class_name, features);
+rf.train(training_data);
+
+// Make predictions
+const predicted_class = rf.predict({
+  color: "blue",
+  shape: "hexagon"
+});
+
+// Evaluate accuracy
+const accuracy = rf.evaluate(test_data);
+console.log(`Accuracy: ${(accuracy * 100).toFixed(1)}%`);
+```
+
+### Random Forest Configuration
+
+```js
+const config = {
+  nEstimators: 100,        // Number of trees (default: 100)
+  maxFeatures: 'sqrt',     // Features per split: 'sqrt', 'log2', 'auto', or number
+  bootstrap: true,         // Use bootstrap sampling (default: true)
+  randomState: 42,         // Random seed for reproducibility
+  maxDepth: undefined,     // Maximum tree depth
+  minSamplesSplit: 2       // Minimum samples to split
+};
+
+const rf = new RandomForest(class_name, features, config);
+rf.train(training_data);
+```
+
+### Random Forest Features
+
+```js
+// Get feature importance scores
+const importance = rf.getFeatureImportance();
+console.log('Feature importance:', importance);
+
+// Get number of trees
+const treeCount = rf.getTreeCount();
+console.log(`Number of trees: ${treeCount}`);
+
+// Get configuration
+const config = rf.getConfig();
+console.log('Configuration:', config);
+```
+
+### Random Forest Model Persistence
+
+```js
+// Export model
+const modelJson = rf.toJSON();
+
+// Import model
+const newRf = new RandomForest(modelJson);
+
+// Or import into existing instance
+rf.import(modelJson);
+```
+
+### Random Forest vs Decision Tree
+
+Random Forest typically provides:
+- **Better accuracy** through ensemble learning
+- **Reduced overfitting** via bootstrap sampling and feature randomization
+- **More stable predictions** through majority voting
+- **Feature importance** scores across the ensemble
+- **Parallel training** capability for better performance
+
 ## Data Validation and Limitations
 
 **Important:** This implementation is intentionally permissive and has limited validation:
@@ -179,11 +289,12 @@ dt2.train([]); // Empty dataset
 This project maintains comprehensive test coverage to ensure reliability and correctness:
 
 ### Current Test Statistics
-- **Total Tests:** 109 passing tests
-- **Test Categories:** 8 comprehensive test suites covering all aspects of the decision tree implementation
+- **Total Tests:** 222 passing tests
+- **Test Categories:** 11 comprehensive test suites covering Decision Trees and Random Forests
 - **Test Framework:** Mocha with TypeScript support
 - **Coverage Areas:**
   - Core decision tree functionality
+  - Random Forest ensemble learning
   - Data validation and sanitization
   - Edge cases and error handling
   - Performance and scalability
@@ -191,6 +302,8 @@ This project maintains comprehensive test coverage to ensure reliability and cor
   - Model persistence and import/export
   - Prediction edge cases
   - ID3 algorithm correctness
+  - Bootstrap sampling and feature selection
+  - Majority voting and ensemble prediction
 
 ### Test Suites
 
@@ -206,6 +319,17 @@ This project maintains comprehensive test coverage to ensure reliability and cor
 | **Prediction Edge Cases** | Missing features, unknown values, data type mismatches | 12 tests |
 | **Type Safety & Interface Validation** | TypeScript type checking, interface consistency | 10 tests |
 | **Reported Bugs** | Regression tests for previously reported issues | 2 tests |
+| **Random Forest Basics** | Core Random Forest functionality, configuration, training | 10 tests |
+| **Random Forest Configuration** | Different parameter combinations and edge cases | 9 tests |
+| **Random Forest Bootstrap Sampling** | Bootstrap sampling with and without replacement | 3 tests |
+| **Random Forest Feature Selection** | Random feature selection strategies | 4 tests |
+| **Random Forest Ensemble Prediction** | Majority voting and prediction stability | 3 tests |
+| **Random Forest Feature Importance** | Feature importance calculation and normalization | 3 tests |
+| **Random Forest Model Persistence** | Export/import functionality for Random Forest models | 3 tests |
+| **Random Forest Edge Cases** | Edge cases specific to Random Forest implementation | 15 tests |
+| **Random Forest Performance** | Performance testing with large numbers of estimators | 2 tests |
+| **Random Forest on Sample Datasets** | Real-world dataset validation with Random Forest | 3 tests |
+| **Random Forest Utility Functions** | Bootstrap sampling, feature selection, majority voting utilities | 20 tests |
 
 ### Running Tests
 

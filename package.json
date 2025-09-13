@@ -43,7 +43,9 @@
     "clean": "rm -rf lib",
     "prepublishOnly": "npm run clean && npm run build",
     "example:js": "node examples/javascript-usage.js",
-    "example:ts": "ts-node examples/typescript-usage.ts"
+    "example:ts": "ts-node examples/typescript-usage.ts",
+    "example:rf-js": "node examples/random-forest-usage.js",
+    "example:rf-ts": "ts-node examples/random-forest-usage.ts"
   },
   "engines": {
     "node": ">= 20.x"

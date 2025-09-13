@@ -1,47 +1,17 @@
 import _ from 'lodash';
+import { 
+  TreeNode, 
+  DecisionTreeData, 
+  TrainingData, 
+  NODE_TYPES 
+} from './shared/types.js';
+import { randomUUID, prob, log2, mostCommon } from './shared/utils.js';
+import { createTree, entropy, gain, maxGain } from './shared/id3-algorithm.js';
 
 /**
  * Decision Tree Algorithm
  * @module DecisionTree
  */
-
-// Type definitions
-interface TreeNode {
-  type: string;
-  name: string;
-  alias: string;
-  val?: any;
-  gain?: number;
-  sampleSize?: number;
-  vals?: TreeNode[];
-  child?: TreeNode;
-  prob?: number;
-}
-
-interface DecisionTreeData {
-  model: TreeNode;
-  data: any[];
-  target: string;
-  features: string[];
-}
-
-interface FeatureGain {
-  gain: number;
-  name: string;
-}
-
-interface TrainingData {
-  [key: string]: any;
-}
-
-// Node types constant
-const NODE_TYPES = {
-  RESULT: 'result',
-  FEATURE: 'feature',
-  FEATURE_VALUE: 'feature_value'
-} as const;
-
-type NodeType = typeof NODE_TYPES[keyof typeof NODE_TYPES];
 
 /**
  * Decision Tree class implementing ID3 algorithm
@@ -164,176 +134,6 @@ class DecisionTree {
   }
 }
 
-/**
- * Creates a new tree using ID3 algorithm
- * @private
- */
-function createTree(data: TrainingData[], target: string, features: string[]): TreeNode {
-  let targets = _.uniq(_.map(data, target));
-  if (targets.length == 1) {
-    return {
-      type: NODE_TYPES.RESULT,
-      val: targets[0],
-      name: targets[0],
-      alias: targets[0] + randomUUID()
-    };
-  }
-
-  if (features.length == 0) {
-    let topTarget = mostCommon(targets);
-    return {
-      type: NODE_TYPES.RESULT,
-      val: topTarget,
-      name: topTarget,
-      alias: topTarget + randomUUID()
-    };
-  }
-
-  let bestFeature = maxGain(data, target, features);
-  let bestFeatureName = bestFeature.name;
-  let bestFeatureGain = bestFeature.gain;
-  let remainingFeatures = _.without(features, bestFeatureName);
-  let possibleValues = _.uniq(_.map(data, bestFeatureName));
-
-  let node: TreeNode = {
-    name: bestFeatureName,
-    alias: bestFeatureName + randomUUID(),
-    gain: bestFeatureGain,
-    sampleSize: data.length,
-    type: NODE_TYPES.FEATURE,
-    vals: _.map(possibleValues, function (featureVal) {
-      const featureValDataSample = data.filter((dataRow) => dataRow[bestFeatureName] == featureVal);
-      const featureValDataSampleSize = featureValDataSample.length;
-
-      const child_node: TreeNode = {
-        name: featureVal,
-        alias: featureVal + randomUUID(),
-        type: NODE_TYPES.FEATURE_VALUE,
-        prob: featureValDataSampleSize / data.length,
-        sampleSize: featureValDataSampleSize
-      };
-
-      child_node.child = createTree(featureValDataSample, target, remainingFeatures);
-      return child_node;
-    })
-  };
-
-  return node;
-}
-
-/**
- * Computes entropy of a list
- * @private
- */
-function entropy(vals: any[]): number {
-  let uniqueVals = _.uniq(vals);
-  let probs = uniqueVals.map(function (x) {
-    return prob(x, vals);
-  });
-
-  let logVals = probs.map(function (p) {
-    return -p * log2(p);
-  });
-
-  return logVals.reduce(function (a, b) {
-    return a + b;
-  }, 0);
-}
-
-/**
- * Computes information gain
- * @private
- */
-function gain(data: TrainingData[], target: string, feature: string): number {
-  let attrVals = _.uniq(_.map(data, feature));
-  let setEntropy = entropy(_.map(data, target));
-  let setSize = _.size(data);
-
-  let entropies = attrVals.map(function (n) {
-    let subset = data.filter(function (x) {
-      return x[feature] === n;
-    });
-
-    return (subset.length / setSize) * entropy(_.map(subset, target));
-  });
-
-  let sumOfEntropies = entropies.reduce(function (a, b) {
-    return a + b;
-  }, 0);
-
-  return setEntropy - sumOfEntropies;
-}
-
-/**
- * Computes Max gain across features to determine best split
- * @private
- */
-function maxGain(data: TrainingData[], target: string, features: string[]): FeatureGain {
-  let maxGain: number | undefined;
-  let maxGainFeature: string | undefined;
-  
-  for (let feature of features) {
-    const featureGain = gain(data, target, feature);
-    if (!maxGain || maxGain < featureGain) {
-      maxGain = featureGain;
-      maxGainFeature = feature;
-    }
-  }
-  
-  return {gain: maxGain!, name: maxGainFeature!};
-}
-
-/**
- * Computes probability of a given value existing in a given list
- * @private
- */
-function prob(value: any, list: any[]): number {
-  let occurrences = _.filter(list, function (element) {
-    return element === value;
-  });
-
-  let numOccurrences = occurrences.length;
-  let numElements = list.length;
-  return numOccurrences / numElements;
-}
-
-/**
- * Computes Log with base-2
- * @private
- */
-function log2(n: number): number {
-  return Math.log(n) / Math.log(2);
-}
-
-/**
- * Finds element with highest occurrence in a list
- * @private
- */
-function mostCommon(list: any[]): any {
-  let elementFrequencyMap: { [key: string]: number } = {};
-  let largestFrequency = -1;
-  let mostCommonElement: any = null;
-
-  list.forEach(function (element) {
-    let elementFrequency = (elementFrequencyMap[element] || 0) + 1;
-    elementFrequencyMap[element] = elementFrequency;
-
-    if (largestFrequency < elementFrequency) {
-      mostCommonElement = element;
-      largestFrequency = elementFrequency;
-    }
-  });
-
-  return mostCommonElement;
-}
-
-/**
- * Generates random UUID
- * @private
- */
-function randomUUID(): string {
-  return "_r" + Math.random().toString(32).slice(2);
-}
 
 // Export the DecisionTree class
 export default DecisionTree;

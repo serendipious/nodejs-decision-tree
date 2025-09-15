@@ -20,9 +20,13 @@ import {
   majorityVote 
 } from './shared/utils.js';
 import { createTree } from './shared/id3-algorithm.js';
+import { DataTypeDetector, detectDataTypes, recommendAlgorithm } from './shared/data-type-detection.js';
+import { globalCache, getCachedPrediction, setCachedPrediction } from './shared/caching-system.js';
+import { processDataOptimized, OptimizedDataset } from './shared/memory-optimization.js';
 
 /**
  * Random Forest class implementing ensemble learning with multiple Decision Trees
+ * Now supports both discrete and continuous variables with automatic algorithm selection
  */
 class RandomForest {
   public static readonly NODE_TYPES = NODE_TYPES;
@@ -32,6 +36,10 @@ class RandomForest {
   private target!: string;
   private features!: string[];
   private config: RandomForestConfig;
+  private featureTypes: Map<string, 'discrete' | 'continuous'> = new Map();
+  private algorithm: 'id3' | 'cart' | 'hybrid' = 'auto';
+  private optimizedDataset?: OptimizedDataset;
+  private dataTypeDetector: DataTypeDetector;
 
   constructor(...args: any[]) {
     const numArgs = args.length;
@@ -43,8 +51,30 @@ class RandomForest {
       bootstrap: true,
       randomState: undefined,
       maxDepth: undefined,
-      minSamplesSplit: 2
+      minSamplesSplit: 2,
+      // Continuous variable support
+      algorithm: 'auto',
+      autoDetectTypes: true,
+      discreteThreshold: 20,
+      continuousThreshold: 20,
+      confidenceThreshold: 0.7,
+      statisticalTests: true,
+      handleMissingValues: true,
+      numericOnlyContinuous: true,
+      cachingEnabled: true,
+      memoryOptimization: true,
+      criterion: 'gini',
+      continuousSplitting: 'binary'
     };
+
+    this.dataTypeDetector = new DataTypeDetector({
+      discreteThreshold: this.config.discreteThreshold,
+      continuousThreshold: this.config.continuousThreshold,
+      confidenceThreshold: this.config.confidenceThreshold,
+      statisticalTests: this.config.statisticalTests,
+      handleMissingValues: this.config.handleMissingValues,
+      numericOnlyContinuous: this.config.numericOnlyContinuous
+    });
     
     if (numArgs === 1) {
       this.import(args[0]);
@@ -82,6 +112,15 @@ class RandomForest {
         }
         if (config && typeof config === 'object') {
           this.config = { ...this.config, ...config };
+          // Update data type detector with new config
+          this.dataTypeDetector = new DataTypeDetector({
+            discreteThreshold: this.config.discreteThreshold,
+            continuousThreshold: this.config.continuousThreshold,
+            confidenceThreshold: this.config.confidenceThreshold,
+            statisticalTests: this.config.statisticalTests,
+            handleMissingValues: this.config.handleMissingValues,
+            numericOnlyContinuous: this.config.numericOnlyContinuous
+          });
         }
 
         this.target = target;
@@ -114,6 +153,23 @@ class RandomForest {
 
     this.data = data;
     this.trees = [];
+
+    // Detect data types if auto-detection is enabled
+    if (this.config.autoDetectTypes) {
+      this.detectDataTypes(data);
+    }
+
+    // Determine algorithm if auto mode
+    if (this.config.algorithm === 'auto') {
+      this.selectAlgorithm(data);
+    } else {
+      this.algorithm = this.config.algorithm as 'id3' | 'cart' | 'hybrid';
+    }
+
+    // Create optimized dataset if memory optimization is enabled
+    if (this.config.memoryOptimization) {
+      this.optimizedDataset = processDataOptimized(data, this.features, this.target, this.featureTypes);
+    }
     
     const random = new SeededRandom(this.config.randomState || Math.floor(Math.random() * 1000000));
     const nEstimators = this.config.nEstimators !== undefined ? this.config.nEstimators : 100;
@@ -131,8 +187,25 @@ class RandomForest {
         random
       );
 
-      // Create and train decision tree
-      const tree = new DecisionTree(this.target, selectedFeatures);
+      // Create decision tree with continuous variable support
+      const treeConfig = {
+        algorithm: this.algorithm === 'hybrid' ? 'auto' : this.algorithm,
+        autoDetectTypes: false, // Already detected
+        discreteThreshold: this.config.discreteThreshold,
+        continuousThreshold: this.config.continuousThreshold,
+        confidenceThreshold: this.config.confidenceThreshold,
+        statisticalTests: this.config.statisticalTests,
+        handleMissingValues: this.config.handleMissingValues,
+        numericOnlyContinuous: this.config.numericOnlyContinuous,
+        cachingEnabled: this.config.cachingEnabled,
+        memoryOptimization: this.config.memoryOptimization,
+        criterion: this.config.criterion,
+        continuousSplitting: this.config.continuousSplitting,
+        minSamplesSplit: this.config.minSamplesSplit,
+        maxDepth: this.config.maxDepth
+      };
+
+      const tree = new DecisionTree(this.target, selectedFeatures, treeConfig);
       tree.train(trainingData);
       
       // Store the bootstrap sample data in the tree for testing purposes
@@ -145,6 +218,33 @@ class RandomForest {
   }
 
   /**
+   * Detects data types for all features
+   */
+  private detectDataTypes(data: TrainingData[]): void {
+    const featureAnalysis = this.dataTypeDetector.analyzeFeatures(data, this.features);
+    
+    for (const [feature, analysis] of Object.entries(featureAnalysis)) {
+      this.featureTypes.set(feature, analysis.type);
+    }
+  }
+
+  /**
+   * Selects the best algorithm based on data characteristics
+   */
+  private selectAlgorithm(data: TrainingData[]): void {
+    const recommendation = recommendAlgorithm(data, this.features, this.target, {
+      discreteThreshold: this.config.discreteThreshold,
+      continuousThreshold: this.config.continuousThreshold,
+      confidenceThreshold: this.config.confidenceThreshold,
+      statisticalTests: this.config.statisticalTests,
+      handleMissingValues: this.config.handleMissingValues,
+      numericOnlyContinuous: this.config.numericOnlyContinuous
+    });
+
+    this.algorithm = recommendation.algorithm;
+  }
+
+  /**
    * Predicts class for a given sample using majority voting
    * @param sample - Sample data to predict
    * @returns Predicted class value
@@ -154,8 +254,32 @@ class RandomForest {
       throw new Error('Random Forest has not been trained yet. Call train() first.');
     }
 
+    // Check cache first if enabled
+    if (this.config.cachingEnabled) {
+      const modelId = this.getModelId();
+      const cachedPrediction = getCachedPrediction(sample, modelId);
+      if (cachedPrediction !== null) {
+        return cachedPrediction;
+      }
+    }
+
     const predictions = this.trees.map(tree => tree.predict(sample));
-    return majorityVote(predictions);
+    const prediction = majorityVote(predictions);
+
+    // Cache prediction if enabled
+    if (this.config.cachingEnabled) {
+      const modelId = this.getModelId();
+      setCachedPrediction(sample, modelId, prediction);
+    }
+
+    return prediction;
+  }
+
+  /**
+   * Gets a unique model identifier for caching
+   */
+  private getModelId(): string {
+    return `rf_${this.algorithm}_${this.target}_${this.features.join('_')}_${this.trees.length}`;
   }
 
   /**
@@ -210,7 +334,24 @@ class RandomForest {
     this.data = data;
     this.target = target;
     this.features = features;
-    this.config = config;
+    this.config = { ...this.config, ...config };
+
+    // Restore continuous variable support
+    if (trees.length > 0) {
+      const firstTree = this.trees[0];
+      this.algorithm = firstTree.getAlgorithm() as 'id3' | 'cart' | 'hybrid';
+      this.featureTypes = new Map(Object.entries(firstTree.getFeatureTypes()));
+    }
+
+    // Update data type detector with restored config
+    this.dataTypeDetector = new DataTypeDetector({
+      discreteThreshold: this.config.discreteThreshold,
+      continuousThreshold: this.config.continuousThreshold,
+      confidenceThreshold: this.config.confidenceThreshold,
+      statisticalTests: this.config.statisticalTests,
+      handleMissingValues: this.config.handleMissingValues,
+      numericOnlyContinuous: this.config.numericOnlyContinuous
+    });
   }
 
   /**
@@ -288,6 +429,40 @@ class RandomForest {
    */
   getConfig(): RandomForestConfig {
     return { ...this.config };
+  }
+
+  /**
+   * Gets the algorithm used by this forest
+   * @returns Algorithm name
+   */
+  getAlgorithm(): 'id3' | 'cart' | 'hybrid' {
+    return this.algorithm;
+  }
+
+  /**
+   * Gets the feature types detected for this forest
+   * @returns Map of feature names to their types
+   */
+  getFeatureTypes(): { [feature: string]: 'discrete' | 'continuous' } {
+    return Object.fromEntries(this.featureTypes);
+  }
+
+  /**
+   * Gets cache statistics if caching is enabled
+   * @returns Cache statistics or null if caching is disabled
+   */
+  getCacheStats(): any | null {
+    if (!this.config.cachingEnabled) return null;
+    return globalCache.getCacheStats();
+  }
+
+  /**
+   * Clears the prediction cache
+   */
+  clearCache(): void {
+    if (this.config.cachingEnabled) {
+      globalCache.clear();
+    }
   }
 }
 

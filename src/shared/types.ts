@@ -12,6 +12,14 @@ export interface TreeNode {
   vals?: TreeNode[];
   child?: TreeNode;
   prob?: number;
+  // Continuous variable support
+  splitThreshold?: number;
+  splitOperator?: 'lte' | 'gt' | 'eq';
+  statistics?: {
+    mean?: number;
+    variance?: number;
+    sampleCount?: number;
+  };
 }
 
 export interface DecisionTreeData {
@@ -19,6 +27,28 @@ export interface DecisionTreeData {
   data: any[];
   target: string;
   features: string[];
+  // Continuous variable support
+  featureTypes?: { [feature: string]: 'discrete' | 'continuous' };
+  algorithm?: 'id3' | 'cart' | 'auto';
+  config?: DecisionTreeConfig;
+}
+
+export interface DecisionTreeConfig {
+  algorithm?: 'auto' | 'id3' | 'cart';
+  minSamplesSplit?: number;
+  minSamplesLeaf?: number;
+  maxDepth?: number;
+  criterion?: 'gini' | 'entropy' | 'mse' | 'mae';
+  continuousSplitting?: 'binary' | 'multiway';
+  autoDetectTypes?: boolean;
+  discreteThreshold?: number;
+  continuousThreshold?: number;
+  confidenceThreshold?: number;
+  statisticalTests?: boolean;
+  handleMissingValues?: boolean;
+  numericOnlyContinuous?: boolean;
+  cachingEnabled?: boolean;
+  memoryOptimization?: boolean;
 }
 
 export interface FeatureGain {
@@ -37,6 +67,19 @@ export interface RandomForestConfig {
   randomState?: number;        // Random seed for reproducibility
   maxDepth?: number;           // Maximum tree depth
   minSamplesSplit?: number;    // Minimum samples to split
+  // Continuous variable support
+  algorithm?: 'auto' | 'id3' | 'cart' | 'hybrid';
+  autoDetectTypes?: boolean;
+  discreteThreshold?: number;
+  continuousThreshold?: number;
+  confidenceThreshold?: number;
+  statisticalTests?: boolean;
+  handleMissingValues?: boolean;
+  numericOnlyContinuous?: boolean;
+  cachingEnabled?: boolean;
+  memoryOptimization?: boolean;
+  criterion?: 'gini' | 'entropy' | 'mse' | 'mae';
+  continuousSplitting?: 'binary' | 'multiway';
 }
 
 export interface RandomForestData {
@@ -60,6 +103,19 @@ export interface XGBoostConfig {
   earlyStoppingRounds?: number;   // Early stopping patience
   randomState?: number;           // Random seed
   validationFraction?: number;    // Fraction for validation set
+  // Continuous variable support
+  algorithm?: 'auto' | 'id3' | 'cart' | 'hybrid';
+  autoDetectTypes?: boolean;
+  discreteThreshold?: number;
+  continuousThreshold?: number;
+  confidenceThreshold?: number;
+  statisticalTests?: boolean;
+  handleMissingValues?: boolean;
+  numericOnlyContinuous?: boolean;
+  cachingEnabled?: boolean;
+  memoryOptimization?: boolean;
+  criterion?: 'gini' | 'entropy' | 'mse' | 'mae';
+  continuousSplitting?: 'binary' | 'multiway';
 }
 
 export interface XGBoostData {

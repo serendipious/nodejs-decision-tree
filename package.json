@@ -1,7 +1,7 @@
 {
   "name": "decision-tree",
   "description": "NodeJS implementation of decision tree, random forest, and XGBoost algorithms with comprehensive performance testing (Node.js 20+)",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Ankit Kuwadekar",
   "repository": {
     "type": "git",

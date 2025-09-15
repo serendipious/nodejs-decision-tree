@@ -196,10 +196,10 @@ if (!Array.isArray(data)) {
 
 ### Test Coverage
 
-- **100% Pass Rate**: All tests must pass before merging
+- **100% Pass Rate**: All 421 tests must pass before merging
 - **New Feature Tests**: Add comprehensive tests for new functionality
 - **Edge Case Coverage**: Test boundary conditions and error scenarios
-- **Performance Tests**: Include performance benchmarks where applicable
+- **Performance Tests**: Include performance benchmarks where applicable (basic performance tests only)
 
 ### Test Categories
 
@@ -210,7 +210,7 @@ Add tests to appropriate files:
 | `decision-tree.ts` | Core Decision Tree functionality | New Decision Tree features |
 | `random-forest.ts` | Random Forest functionality | New Random Forest features |
 | `xgboost.ts` | XGBoost functionality | New XGBoost features |
-| `performance-tests.ts` | Performance benchmarks | Performance-related changes |
+| `performance-tests.ts` | Basic performance benchmarks | Performance-related changes |
 | `edge-cases.ts` | Edge cases and error handling | Error handling improvements |
 | `data-validation.ts` | Input validation | Input validation changes |
 | `type-safety.ts` | TypeScript type safety | Type system changes |
@@ -242,10 +242,10 @@ describe('Feature Name', function() {
 
 ### Performance Testing
 
-For performance-related changes, add benchmarks:
+For performance-related changes, add basic benchmarks (avoid extensive performance tests):
 
 ```typescript
-it('should perform within time limits', () => {
+it('should perform within reasonable time limits', () => {
   const startTime = Date.now();
   // Perform operation
   const endTime = Date.now();
@@ -256,11 +256,13 @@ it('should perform within time limits', () => {
 });
 ```
 
+**Note**: Extensive performance and memory usage tests have been removed to focus on core functionality. Only add basic performance tests when necessary.
+
 ## Pull Request Process
 
 ### Before Submitting
 
-- [ ] All tests pass (`npm test` or `bun test`)
+- [ ] All 421 tests pass (`npm test` or `bun test`)
 - [ ] Code builds without errors (`npm run build` or `bun run build`)
 - [ ] New features have comprehensive tests
 - [ ] Documentation is updated
@@ -285,7 +287,7 @@ Brief description of changes and motivation.
 - [ ] All existing tests pass
 - [ ] New tests added for new functionality
 - [ ] Manual testing completed
-- [ ] Performance impact assessed (if applicable)
+- [ ] Performance impact assessed (if applicable - basic tests only)
 - [ ] Edge cases tested
 
 ## Checklist

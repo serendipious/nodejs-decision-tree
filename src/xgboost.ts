@@ -8,6 +8,7 @@ import DecisionTree from './decision-tree.js';
 import { 
   TreeNode, 
   DecisionTreeData, 
+  DecisionTreeConfig,
   TrainingData, 
   XGBoostConfig, 
   XGBoostData,
@@ -47,7 +48,7 @@ class XGBoost {
     iterations: []
   };
   private featureTypes: Map<string, 'discrete' | 'continuous'> = new Map();
-  private algorithm: 'id3' | 'cart' | 'hybrid' = 'auto';
+  private algorithm: 'id3' | 'cart' | 'hybrid' | 'auto' = 'auto';
   private optimizedDataset?: OptimizedDataset;
   private dataTypeDetector: DataTypeDetector;
 
@@ -265,8 +266,8 @@ class XGBoost {
       );
 
       // Create DecisionTree instance with continuous variable support
-      const treeConfig = {
-        algorithm: this.algorithm === 'hybrid' ? 'auto' : this.algorithm,
+      const treeConfig: DecisionTreeConfig = {
+        algorithm: this.algorithm === 'hybrid' ? 'auto' : this.algorithm as 'id3' | 'cart' | 'auto',
         autoDetectTypes: false, // Already detected
         discreteThreshold: this.config.discreteThreshold,
         continuousThreshold: this.config.continuousThreshold,
@@ -389,7 +390,7 @@ class XGBoost {
       }
     }
 
-    let prediction = this.baseScore;
+    let prediction: any = this.baseScore;
     const learningRate = this.config.learningRate || 0.1;
 
     for (let i = 0; i < this.bestIteration; i++) {
@@ -403,7 +404,7 @@ class XGBoost {
       // Convert to probability using sigmoid
       const clampedPrediction = Math.max(-500, Math.min(500, prediction));
       const probability = 1 / (1 + Math.exp(-clampedPrediction));
-      prediction = probability > 0.5 ? true : false;
+      prediction = probability > 0.5;
     }
 
     // Cache prediction if enabled
@@ -603,7 +604,7 @@ class XGBoost {
    * Gets the algorithm used by this model
    * @returns Algorithm name
    */
-  getAlgorithm(): 'id3' | 'cart' | 'hybrid' {
+  getAlgorithm(): 'id3' | 'cart' | 'hybrid' | 'auto' {
     return this.algorithm;
   }
 

@@ -64,6 +64,8 @@ class DecisionTree {
       handleMissingValues: this.config.handleMissingValues,
       numericOnlyContinuous: this.config.numericOnlyContinuous
     });
+
+    // Configuration validation will be called after merging user input
     
     if (numArgs === 1) {
       this.import(args[0]);
@@ -105,6 +107,9 @@ class DecisionTree {
 
         this.target = target;
         this.features = features;
+        
+        // Validate configuration after merging user input
+        this.validateConfig();
       }
     }
     else if (numArgs === 4) {
@@ -113,7 +118,12 @@ class DecisionTree {
       instance.train(data);
       return instance;
     }
-    else {
+    
+    // Validate configuration for cases where it wasn't validated yet
+    if (numArgs === 2) {
+      this.validateConfig();
+    }
+    else if (numArgs !== 1 && numArgs !== 3 && numArgs !== 4) {
       throw new Error('Invalid arguments passed to constructor. Check documentation on usage');
     }
   }
@@ -148,6 +158,26 @@ class DecisionTree {
 
     // Train the model using the selected algorithm
     this.model = this.createTree(data);
+  }
+
+  /**
+   * Validates the configuration
+   */
+  private validateConfig(): void {
+    const validAlgorithms = ['auto', 'id3', 'cart'];
+    if (this.config.algorithm && !validAlgorithms.includes(this.config.algorithm)) {
+      throw new Error(`Invalid algorithm: ${this.config.algorithm}. Must be one of: ${validAlgorithms.join(', ')}`);
+    }
+
+    const validCriteria = ['gini', 'entropy', 'mse', 'mae'];
+    if (this.config.criterion && !validCriteria.includes(this.config.criterion)) {
+      throw new Error(`Invalid criterion: ${this.config.criterion}. Must be one of: ${validCriteria.join(', ')}`);
+    }
+
+    const validSplitting = ['binary', 'multiway'];
+    if (this.config.continuousSplitting && !validSplitting.includes(this.config.continuousSplitting)) {
+      throw new Error(`Invalid continuousSplitting: ${this.config.continuousSplitting}. Must be one of: ${validSplitting.join(', ')}`);
+    }
   }
 
   /**
@@ -190,7 +220,7 @@ class DecisionTree {
         continuousSplitting: this.config.continuousSplitting || 'binary'
       };
 
-      return createCARTTree(data, this.target, this.features, this.featureTypes, cartConfig);
+      return createCARTTree(data, this.target, this.features, Object.fromEntries(this.featureTypes), cartConfig);
     } else {
       // Use ID3 algorithm
       return createTree(
@@ -241,11 +271,18 @@ class DecisionTree {
         });
       }
 
-      if (childNode) {
-        root = childNode.child!;
+      // For CART trees, we need to traverse through intermediate nodes
+      if (childNode && childNode.child) {
+        root = childNode.child;
+      } else if (childNode) {
+        root = childNode;
       } else {
         // Fallback to first child if no match found
-        root = root.vals![0].child!;
+        if (root.vals && root.vals.length > 0) {
+          root = root.vals[0].child || root.vals[0];
+        } else {
+          break;
+        }
       }
     }
 
@@ -319,13 +356,13 @@ class DecisionTree {
    * @returns JSON object containing model data
    */
   toJSON(): DecisionTreeData {
-    const {data, target, features} = this;
+    const {target, features} = this;
     const model = this.model;
     const featureTypes = Object.fromEntries(this.featureTypes);
 
     return {
       model, 
-      data, 
+      data: [], // Don't store training data in exported model
       target, 
       features,
       featureTypes,

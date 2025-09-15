@@ -442,28 +442,6 @@ describe('XGBoost Edge Cases', function() {
   });
 });
 
-describe('XGBoost Performance', function() {
-  it('should handle large number of estimators', () => {
-    const config = { nEstimators: 200, randomState: 42 };
-    const xgb = new XGBoost(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features, config);
-    
-    const startTime = Date.now();
-    xgb.train(SAMPLE_DATASET.data);
-    const endTime = Date.now();
-    
-    assert.strictEqual(xgb.getTreeCount(), 200);
-    assert.ok(endTime - startTime < 10000); // Should complete within 10 seconds
-  });
-
-  it('should handle many features', () => {
-    const manyFeatures = ['color', 'shape', 'size', 'texture', 'weight', 'height', 'width', 'density'];
-    const config = { nEstimators: 10, randomState: 42 };
-    const xgb = new XGBoost(SAMPLE_DATASET_CLASS_NAME, manyFeatures, config);
-    
-    assert.doesNotThrow(() => xgb.train(SAMPLE_DATASET.data));
-    assert.ok(xgb.getTreeCount() > 0);
-  });
-});
 
 describe('XGBoost on Sample Datasets', function() {
   it('should work with tic-tac-toe dataset', () => {

@@ -167,12 +167,15 @@ export class DataTypeDetector {
     // For targets, we also determine if it's suitable for regression
     if (targetInfo.type === 'continuous' && targetInfo.statistics) {
       const { mean, std, min, max } = targetInfo.statistics;
-      const range = max - min;
-      const coefficientOfVariation = std / mean;
       
-      // High coefficient of variation suggests good regression target
-      if (coefficientOfVariation > 0.1 && range > 0) {
-        targetInfo.confidence = Math.min(targetInfo.confidence + 0.2, 1.0);
+      if (mean !== undefined && std !== undefined && min !== undefined && max !== undefined) {
+        const range = max - min;
+        const coefficientOfVariation = std / mean;
+        
+        // High coefficient of variation suggests good regression target
+        if (coefficientOfVariation > 0.1 && range > 0) {
+          targetInfo.confidence = Math.min(targetInfo.confidence + 0.2, 1.0);
+        }
       }
     }
 

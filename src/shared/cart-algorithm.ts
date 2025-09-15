@@ -60,33 +60,38 @@ export class CARTAlgorithm {
     featureTypes: { [feature: string]: 'discrete' | 'continuous' },
     currentDepth: number = 0
   ): TreeNode {
+    // Base case: empty data
+    if (data.length === 0) {
+      throw new Error('Cannot create tree from empty dataset');
+    }
+    
     const targetValues = data.map(row => row[target]);
     
     // Base case: all samples have same target
     if (this.allSameValue(targetValues)) {
-      return this.createLeafNode(targetValues[0], data.length);
+      return this.createLeafNode(this.getLeafValue(targetValues), data.length);
     }
 
     // Base case: no features left
     if (features.length === 0) {
-      return this.createLeafNode(this.getMostCommonValue(targetValues), data.length);
+      return this.createLeafNode(this.getLeafValue(targetValues), data.length);
     }
 
     // Base case: max depth reached
     if (this.config.maxDepth && currentDepth >= this.config.maxDepth) {
-      return this.createLeafNode(this.getMostCommonValue(targetValues), data.length);
+      return this.createLeafNode(this.getLeafValue(targetValues), data.length);
     }
 
     // Base case: not enough samples to split
     if (data.length < this.config.minSamplesSplit) {
-      return this.createLeafNode(this.getMostCommonValue(targetValues), data.length);
+      return this.createLeafNode(this.getLeafValue(targetValues), data.length);
     }
 
     // Find best split
     const bestSplit = this.findBestSplit(data, target, features, featureTypes);
     
     if (!bestSplit || bestSplit.gain <= 0) {
-      return this.createLeafNode(this.getMostCommonValue(targetValues), data.length);
+      return this.createLeafNode(this.getLeafValue(targetValues), data.length);
     }
 
     // Create internal node
@@ -96,7 +101,10 @@ export class CARTAlgorithm {
       alias: bestSplit.feature + randomUUID(),
       gain: bestSplit.gain,
       sampleSize: data.length,
-      vals: []
+      vals: [],
+      // Add continuous variable properties
+      splitThreshold: bestSplit.threshold,
+      splitOperator: bestSplit.operator
     };
 
     // Create child nodes based on split type
@@ -458,14 +466,33 @@ export class CARTAlgorithm {
     let maxCount = 0;
     let mostCommon = values[0];
 
-    for (const [value, count] of Object.entries(valueCounts)) {
+    for (const [valueStr, count] of Object.entries(valueCounts)) {
       if (count > maxCount) {
         maxCount = count;
-        mostCommon = value;
+        // Find the original value that matches this string representation
+        mostCommon = values.find(v => String(v) === valueStr);
       }
     }
 
     return mostCommon;
+  }
+
+  /**
+   * Gets the appropriate leaf value based on the criterion
+   */
+  private getLeafValue(values: any[]): any {
+    if (values.length === 0) return null;
+    
+    // For regression tasks (MSE, MAE), use mean
+    if (this.config.criterion === 'mse' || this.config.criterion === 'mae') {
+      const numericValues = values.map(v => Number(v)).filter(n => !isNaN(n));
+      if (numericValues.length > 0) {
+        return numericValues.reduce((sum, val) => sum + val, 0) / numericValues.length;
+      }
+    }
+    
+    // For classification tasks (gini, entropy), use most common value
+    return this.getMostCommonValue(values);
   }
 
   /**

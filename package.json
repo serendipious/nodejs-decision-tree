@@ -40,6 +40,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "test": "npm run build && cross-env NODE_PATH=. mocha --require ts-node/register -R spec tst/*.ts",
+    "test:bun": "bun run build && NODE_PATH=. npx mocha --require ts-node/register -R spec tst/*.ts",
     "test:watch": "npm run build && NODE_PATH=. ./node_modules/.bin/mocha --require ts-node/register -R spec --watch tst/*.ts",
     "clean": "rm -rf lib",
     "prepublishOnly": "npm run clean && npm run build",

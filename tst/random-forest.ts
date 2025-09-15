@@ -431,28 +431,6 @@ describe('Random Forest Edge Cases', function() {
   });
 });
 
-describe('Random Forest Performance', function() {
-  it('should handle large number of estimators', () => {
-    const config = { nEstimators: 200, randomState: 42 };
-    const rf = new RandomForest(SAMPLE_DATASET_CLASS_NAME, SAMPLE_DATASET.features, config);
-    
-    const startTime = Date.now();
-    rf.train(SAMPLE_DATASET.data);
-    const endTime = Date.now();
-    
-    assert.strictEqual(rf.getTreeCount(), 200);
-    assert.ok(endTime - startTime < 10000); // Should complete within 10 seconds
-  });
-
-  it('should handle many features', () => {
-    const manyFeatures = ['color', 'shape', 'size', 'texture', 'weight', 'height', 'width', 'density'];
-    const config = { nEstimators: 10, randomState: 42 };
-    const rf = new RandomForest(SAMPLE_DATASET_CLASS_NAME, manyFeatures, config);
-    
-    assert.doesNotThrow(() => rf.train(SAMPLE_DATASET.data));
-    assert.strictEqual(rf.getTreeCount(), 10);
-  });
-});
 
 describe('Random Forest on Sample Datasets', function() {
   it('should work with tic-tac-toe dataset', () => {

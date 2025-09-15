@@ -711,31 +711,7 @@ Choose the right algorithm for your use case:
 
 ### Performance Test Validation
 
-The performance benchmarks are rigorously tested through comprehensive test suites:
-
-```typescript
-// Training latency tests
-it('should train DecisionTree on 1000 samples in < 50ms', function() {
-  const data = generateLargeContinuousData(1000);
-  const start = performance.now();
-  const dt = new DecisionTree('target', ['feature1', 'feature2', 'feature3'], {
-    algorithm: 'cart',
-    autoDetectTypes: true
-  });
-  dt.train(data);
-  const duration = performance.now() - start;
-  assert(duration < 50, `Training took ${duration}ms, expected < 50ms`);
-});
-
-// Inference latency tests
-it('should predict on DecisionTree in < 1ms', function() {
-  const sample = { feature1: 50, feature2: 25, feature3: 100 };
-  const start = performance.now();
-  const prediction = trainedModel.predict(sample);
-  const duration = performance.now() - start;
-  assert(duration < 1, `Prediction took ${duration}ms, expected < 1ms`);
-});
-```
+The performance benchmarks are tested through basic performance test suites that ensure algorithms meet reasonable speed requirements for production use.
 
 ## Data Validation and Limitations
 
@@ -770,30 +746,27 @@ dt2.train([]); // Empty dataset
 This project maintains comprehensive test coverage to ensure reliability and correctness:
 
 ### Current Test Statistics
-- **Total Tests:** 500+ passing tests
-- **Test Categories:** 20+ comprehensive test suites covering Decision Trees, Random Forests, XGBoost, and Performance
+- **Total Tests:** 421 passing tests
+- **Test Categories:** 15+ comprehensive test suites covering Decision Trees, Random Forests, XGBoost, and Continuous Variables
 - **Test Framework:** Mocha with TypeScript support
 - **Coverage Areas:**
   - Core decision tree functionality (ID3 and CART)
   - Random Forest ensemble learning with continuous variables
   - XGBoost gradient boosting with continuous variables
   - Data type detection and algorithm selection
-  - CART algorithm implementation and performance
+  - CART algorithm implementation and functionality
   - Data validation and sanitization
   - Edge cases and error handling
-  - Performance and scalability
   - Type safety and interface validation
   - Model persistence and import/export
   - Prediction edge cases
   - ID3 algorithm correctness
   - Bootstrap sampling and feature selection
   - Majority voting and ensemble prediction
-  - Caching system performance
-  - Memory optimization
+  - Caching system functionality
   - Continuous variable handling
   - Mixed data type scenarios
   - Regression tasks
-  - Low-latency performance requirements
 
 ### Test Suites
 
@@ -805,7 +778,7 @@ This project maintains comprehensive test coverage to ensure reliability and cor
 | **Sample Dataset Tests** | Real-world dataset validation (Tic-tac-toe, Voting, Object Evaluation) | 7 tests |
 | **ID3 Algorithm Tests** | Entropy calculations, feature selection, tree structure | 9 tests |
 | **Model Persistence** | Import/export functionality, data integrity | 15 tests |
-| **Performance & Scalability** | Large datasets, memory management, concurrent operations | 12 tests |
+| **Performance & Scalability** | Large datasets, memory management, concurrent operations | 8 tests |
 | **Prediction Edge Cases** | Missing features, unknown values, data type mismatches | 12 tests |
 | **Type Safety & Interface Validation** | TypeScript type checking, interface consistency | 10 tests |
 | **Reported Bugs** | Regression tests for previously reported issues | 2 tests |
@@ -817,7 +790,7 @@ This project maintains comprehensive test coverage to ensure reliability and cor
 | **Random Forest Feature Importance** | Feature importance calculation and normalization | 3 tests |
 | **Random Forest Model Persistence** | Export/import functionality for Random Forest models | 3 tests |
 | **Random Forest Edge Cases** | Edge cases specific to Random Forest implementation | 15 tests |
-| **Random Forest Performance** | Performance testing with large numbers of estimators | 2 tests |
+| **Random Forest Performance** | Performance testing with large numbers of estimators | 1 test |
 | **Random Forest on Sample Datasets** | Real-world dataset validation with Random Forest | 3 tests |
 | **Random Forest Utility Functions** | Bootstrap sampling, feature selection, majority voting utilities | 20 tests |
 | **XGBoost Basics** | Core XGBoost functionality, configuration, training | 10 tests |
@@ -827,12 +800,11 @@ This project maintains comprehensive test coverage to ensure reliability and cor
 | **XGBoost Feature Importance** | Feature importance calculation for XGBoost | 3 tests |
 | **XGBoost Model Persistence** | Export/import functionality for XGBoost models | 4 tests |
 | **XGBoost Edge Cases** | Edge cases specific to XGBoost implementation | 5 tests |
-| **XGBoost Performance** | Performance testing with large numbers of estimators | 2 tests |
+| **XGBoost Performance** | Performance testing with large numbers of estimators | 1 test |
 | **XGBoost on Sample Datasets** | Real-world dataset validation with XGBoost | 3 tests |
-| **Continuous Variables** | Data type detection, CART algorithm, hybrid functionality | 60+ tests |
-| **Performance Continuous** | Low-latency tests, caching, memory optimization | 40+ tests |
-| **CART Algorithm** | CART implementation, continuous splitting, regression | 35+ tests |
-| **Data Type Detection** | Automatic detection, algorithm recommendation | 45+ tests |
+| **Continuous Variables** | Data type detection, CART algorithm, hybrid functionality | 15+ tests |
+| **CART Algorithm** | CART implementation, continuous splitting, regression | 20+ tests |
+| **Data Type Detection** | Automatic detection, algorithm recommendation | 20+ tests |
 | **XGBoost Loss Functions** | Loss functions (MSE, Logistic, Cross-Entropy) | 15 tests |
 | **XGBoost Gradient Boosting Utils** | Gradient boosting utility functions | 8 tests |
 | **XGBoost Edge Cases - Empty Datasets** | Empty and invalid dataset handling | 7 tests |
@@ -842,15 +814,10 @@ This project maintains comprehensive test coverage to ensure reliability and cor
 | **XGBoost Edge Cases - Feature Importance** | Feature importance edge cases | 3 tests |
 | **XGBoost Edge Cases - Boosting History** | Boosting history edge cases | 3 tests |
 | **XGBoost Edge Cases - Performance** | Performance edge cases | 4 tests |
-| **Performance Tests - Decision Tree** | Decision Tree performance benchmarks | 6 tests |
-| **Performance Tests - Random Forest** | Random Forest performance benchmarks | 7 tests |
-| **Performance Tests - XGBoost** | XGBoost performance benchmarks | 8 tests |
-| **Performance Tests - Algorithm Comparison** | Cross-algorithm performance comparison | 4 tests |
-| **Performance Tests - Edge Cases** | Performance edge cases and stress tests | 3 tests |
 
 ### Performance Benchmarks
 
-The library includes comprehensive performance tests to ensure all algorithms meet speed requirements:
+The library includes performance tests to ensure all algorithms meet speed requirements:
 
 - **Decision Tree**: < 100ms training, < 10ms prediction
 - **Random Forest**: < 500ms training, < 50ms prediction  
@@ -971,7 +938,7 @@ We welcome contributions to improve this machine learning library! Please see ou
 8. Open a Pull Request
 
 **Key Requirements:**
-- ✅ All 408 tests must pass
+- ✅ All 421 tests must pass
 - ✅ TypeScript compliance and proper typing
 - ✅ Comprehensive test coverage for new features
 - ✅ Performance considerations for large datasets

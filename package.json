@@ -22,7 +22,7 @@
       "require": "./lib/xgboost.js",
       "types": "./lib/xgboost.d.ts"
     },
-    "./xgboost": {
+    "./random-forest": {
       "import": "./lib/random-forest.js",
       "require": "./lib/random-forest.js",
       "types": "./lib/random-forest.d.ts"
